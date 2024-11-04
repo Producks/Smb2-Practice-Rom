@@ -264,6 +264,7 @@ EnemyMovementDirection:
 ; FOR RENT
 IFDEF PLAYER_HITBOX
 PlayerHitbox:
+Force8x8SpriteSize:
 ENDIF
 	.dsb 1 ; $0078
 ; This is set on entering subspace, depending
@@ -407,8 +408,10 @@ ENDIF
 SoundEffectTimer2:
 	.dsb 1 ; $00c4
 ; FOR RENT
+Counter60hz:
 	.dsb 1 ; $00c5
 ; FOR RENT
+Previous60hz:
 	.dsb 1 ; $00c6
 PlayerAnimationFrame:
 	.dsb 1 ; $00c7
@@ -1532,16 +1535,27 @@ Continues:
 	.dsb 1 ; $05c5
 
 ; FOR RENT
+RealFramesElapsed:
 	.dsb 1 ; $05c6
+DroppedFrames:
 	.dsb 1 ; $05c7
+LevelTimerFrames:
 	.dsb 1 ; $05c8
+LevelTimerSeconds:
 	.dsb 1 ; $05c9
+LevelTimerMinutes:
 	.dsb 1 ; $05ca
+RoomTimerFrames:
 	.dsb 1 ; $05cb
+RoomTimerSeconds:
 	.dsb 1 ; $05cc
+RoomTimerMinutes:
 	.dsb 1 ; $05cd
+ResetLevelTimer:
 	.dsb 1 ; $05ce
+IsFirstFrameOfRoom:
 	.dsb 1 ; $05cf
+DontResetLevelTimer:
 	.dsb 1 ; $05d0
 	.dsb 1 ; $05d1
 	.dsb 1 ; $05d2
