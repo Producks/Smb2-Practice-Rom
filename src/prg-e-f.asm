@@ -2058,7 +2058,7 @@ sub_BANKF_EA68:
   LDA #$40
   STA StackArea ; Stack area
   JSR LUI_ENABLE_NMI_8X8
-  JMP $EAAB ; LABEL CHANGE LATER HIJACK TOO
+  JMP WaitForNMI ; CHANGE LATER HIJACK TOO
 	;LDY ExtraLives
 	;DEY
 	;TYA
@@ -2465,8 +2465,9 @@ NMI_AfterBackgroundAttributesUpdate:
 
 	;JSR ResetPPUAddress
   JMP LUI_NMI_SRITE_SIZE_FIX ; CHANGE HIJACK...?
-
+JUMP_LABEL_LUI_01:
 	LDA #PPUCtrl_Base2000 | PPUCtrl_WriteHorizontal | PPUCtrl_Sprite0000 | PPUCtrl_Background1000 | PPUCtrl_SpriteSize8x16 | PPUCtrl_NMIEnabled
+JUMP_LABEL_LUI_02:
 	ORA PPUScrollXHiMirror
 	LDY IsHorizontalLevel
 	BNE NMI_UpdatePPUScroll
@@ -2554,6 +2555,7 @@ DoSoundProcessing:
 
 ClearNametablesAndSprites:
 	LDA #$00
+LUI_JUMP_LABEL_03:
 	STA PPUMaskMirror
 	STA PPUMASK
 	LDA #$20
@@ -2775,13 +2777,13 @@ LUI_NMI_EXIT:
   RTI
 
 LUI_NMI_SRITE_SIZE_FIX:
-  JSR $EC68
+  JSR ResetPPUAddress
   LDA Force8x8SpriteSize
   BNE RandomLabel01
-  JMP $EC25
+  JMP JUMP_LABEL_LUI_01 ; label
 RandomLabel01:
   LDA #$90
-  JMP $EC27
+  JMP JUMP_LABEL_LUI_02 ; label
 
 LUI_EveryFrame:
 	LDA Counter60hz
@@ -2815,7 +2817,7 @@ LUI_PreStartLevel:
 	BNE RandomLabel03
 	INC ResetLevelTimer
 RandomLabel03:
-  JMP $E1F4
+  JMP SetStack100Gameplay
 
 LUI_LEVEL_INIT:
 	STA DroppedFrames
@@ -2849,19 +2851,17 @@ LUI_SKIP_TIMER_DISPLAY:
 
 LUI_TURN_OFF_PPU_EXCEPT_SPRITES:
 	LDA #$10
-	JMP $EAA9
-		
+	JMP _WaitForNMI_StuffPPUMask
 		
 LUI_SUB_AREA_LOAD:
 	LDA #$10
 	; rest of ClearNametablesAndSprites
-	JSR $EC8C
+	JSR LUI_JUMP_LABEL_03 ; label
 	LDA #$90
 	STA PPUCTRL
 	STA PPUCtrlMirror
 	INC Force8x8SpriteSize
 	JMP LUI_DRAW_SPRITE_TIMER
-		
 
 LUI_SUB_AREA_BEGIN_EXIT:
 	JSR HideAllSprites ; HideAllSprites
@@ -2901,7 +2901,7 @@ LUI_BONUS_CHANCE_LOAD:
 
 LUI_DRAW_SPRITE_TIMER:
 	LDA #$3B
-	STA $06FA
+	STA SpriteCHR2
 	
 	LDY #$00
 	LDA #LUI_LEVEL_TIMER_Y_POS
@@ -3024,7 +3024,7 @@ LUI_PRE_ENDING_SCENE:
 	JSR Delay160Frames
 	LDA #0
 	STA Force8x8SpriteSize
-	JMP $E956
+	JMP EndingSceneRoutine
 
 LUI_LEVEL_TICK:
 	JSR LUI_UPDATE_TIMER
@@ -6190,7 +6190,7 @@ LUI_CHECK_WARP
 	LDA Player1JoypadPress
 	AND #$20
 	BNE LUI_WARP
-	JMP $E521
+	JMP DoSuicideCheatCheck
 
 LUI_WARP:
 		; see ResetAreaAndProcessGameMode
