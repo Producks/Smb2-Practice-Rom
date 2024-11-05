@@ -2019,7 +2019,8 @@ LoseALife:
 	LDA #02
 	STA PlayerAnimationFrame
 	LDY #$01 ; Set game mode to title card
-	DEC ExtraLives
+;	DEC ExtraLives CHANGE
+  INC DontResetLevelTimer
 	BNE SetGameModeAfterDeath
 
 	INY ; If no lives, increase game mode

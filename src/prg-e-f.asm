@@ -603,7 +603,8 @@ PreLevelTitleCard_PauseLoop:
 	BPL PreLevelTitleCard_PauseLoop
 
 PreStartLevel:
-	JSR SetStack100Gameplay
+	;JSR SetStack100Gameplay
+  JSR LUI_PreStartLevel
 
 	JSR WaitForNMI_TurnOffPPU
 
@@ -897,9 +898,10 @@ StartLevelAfterTitleCard:
 	JSR DisplayLevelTitleCardAndMore
 
 StartLevel:
-	JSR WaitForNMI_TurnOffPPU
-
-	LDA #$B0
+	;JSR WaitForNMI_TurnOffPPU CHANGE HIHACK
+  JSR LUI_LEVEL_LOAD_HIJACK
+  LDA #$90
+	;LDA #$B0
 	ORA PPUScrollXHiMirror
 	LDY IsHorizontalLevel
 	BNE StartLevel_SetPPUCtrlMirror
@@ -928,14 +930,18 @@ IFDEF AREA_HEADER_TILESET
 	JSR LoadWorldCHRBanks
 ENDIF
 
-	JSR HideAllSprites
+	;JSR HideAllSprites
+  NOP
+  NOP
+  NOP ; CHANGE CHECK LATER? NOT SURE
 
 	JSR WaitForNMI
 
 	JSR SetStack100Gameplay
 
-	LDA #PPUCtrl_Base2000 | PPUCtrl_WriteHorizontal | PPUCtrl_Sprite0000 | PPUCtrl_Background1000 | PPUCtrl_SpriteSize8x16 | PPUCtrl_NMIEnabled
-	STA PPUCtrlMirror
+	;LDA #PPUCtrl_Base2000 | PPUCtrl_WriteHorizontal | PPUCtrl_Sprite0000 | PPUCtrl_Background1000 | PPUCtrl_SpriteSize8x16 | PPUCtrl_NMIEnabled
+	LDA #$90 ; CHANGE HIJACK
+  STA PPUCtrlMirror
 
 	LDA IsHorizontalLevel
 	BEQ VerticalLevel_Loop
@@ -955,7 +961,8 @@ HorizontalLevel_Loop:
 
 	LDA #$00
 	STA BreakStartLevelLoop
-	JSR WaitForNMI_TurnOnPPU
+	;JSR WaitForNMI_TurnOnPPU CHANGE HIJACK
+  JSR LUI_LEVEL_LOAD_FINISHED
 
 HorizontalLevel_CheckScroll:
 	JSR WaitForNMI
@@ -1015,7 +1022,8 @@ VerticalLevel_Loop:
 
 	LDA #$00
 	STA BreakStartLevelLoop
-	JSR WaitForNMI_TurnOnPPU
+	;JSR WaitForNMI_TurnOnPPU CHANGE HIJACK
+  JSR LUI_LEVEL_LOAD_FINISHED
 
 VerticalLevel_CheckScroll:
 	JSR WaitForNMI
@@ -1071,8 +1079,10 @@ SetStack100Pause:
 	STA StackArea
 
 PauseScreenLoop:
-	LDA #$0E
-	STA byte_RAM_6
+;	LDA #$0E
+;	STA byte_RAM_6
+  JSR LUI_PAUSE_INIT
+  NOP
 
 DoSuicideCheatCheck:
 	JSR WaitForNMI_TurnOnPPU
@@ -1092,8 +1102,10 @@ PauseScreenExitCheck:
 	AND #ControllerInput_Start
 	BNE HidePauseScreen
 
-	DEC byte_RAM_6
-	BPL DoSuicideCheatCheck
+	;DEC byte_RAM_6
+	;BPL DoSuicideCheatCheck
+  JMP LUI_PAUSE_TICK
+  .db $E4
 
 	INC byte_RAM_7
 	LDA byte_RAM_7
@@ -1173,7 +1185,8 @@ HidePauseScreen_Horizontal_Loop:
 
 
 InitializeSubArea:
-	JSR ClearNametablesAndSprites
+	;JSR ClearNametablesAndSprites CHANGE HIJACK
+  JSR LUI_SUB_AREA_LOAD
 
 	LDA #PRGBank_6_7
 	JSR ChangeMappedPRGBank
@@ -1238,7 +1251,8 @@ SubArea_Loop:
 	JSR LoadCurrentPalette
 
 loc_BANKF_E606:
-	JSR WaitForNMI_TurnOnPPU
+	;JSR WaitForNMI_TurnOnPPU Change HIJACK
+  JSR LUI_SUB_AREA_INIT
 
 ; subspace
 loc_BANKF_E609:
@@ -1272,9 +1286,12 @@ loc_BANKF_E627:
 
 	JSR LoadCurrentPalette
 
-	JSR WaitForNMI_TurnOffPPU
-
-	JSR HideAllSprites
+	;JSR WaitForNMI_TurnOffPPU
+  JSR LUI_SUB_AREA_BEGIN_EXIT ; HIJACK
+  NOP
+  NOP
+  NOP
+	;JSR HideAllSprites
 
 	LDY CompareMusicIndex
 	STY CurrentMusicIndex
@@ -1298,7 +1315,8 @@ ExitSubArea_Loop:
 	LDA byte_RAM_537
 	BEQ ExitSubArea_Loop
 
-	JSR WaitForNMI_TurnOnPPU
+	;JSR WaitForNMI_TurnOnPPU HIJACK CHANGE
+  JSR LUI_SUB_AREA_FINISH
 
 	JMP HorizontalLevel_CheckScroll
 
@@ -1493,12 +1511,17 @@ DoWorldWarp:
 	JSR ClearNametablesAndSprites
 	JSR SetBlackAndWhitePalette
 
-	JSR EnableNMI
+	;JSR EnableNMI HIJACK CHANGE
+  JSR LUI_WARP_LOAD
 
 	JSR ChangeTitleCardCHR
 
-	LDA #ScreenUpdateBuffer_WarpToWorld
-	STA ScreenUpdateIndex
+	;LDA #ScreenUpdateBuffer_WarpToWorld
+	;STA ScreenUpdateIndex
+  NOP
+  NOP
+  NOP
+  NOP ; CHANGE OPTIMIZE LATER
 	LDA #Music2_SlotWarpFanfare
 	STA MusicQueue2
 	JSR Delay160Frames
@@ -1526,7 +1549,8 @@ EndOfLevelJump:
 	BNE EndOfRegularLevel
 EndOfLastLevel:
 	; Otherwise, display the ending
-	JMP EndingSceneRoutine
+	;JMP EndingSceneRoutine CHANGE HIJACK
+  JMP LUI_PRE_ENDING_SCENE
 
 EndOfRegularLevel:
 	; This needs to be set at the end of regular levels to avoid a bug where
@@ -1539,9 +1563,11 @@ IFDEF DISABLE_BONUS_CHANCE
 	JMP GoToNextLevel
 ELSE
 	JSR WaitForNMI_TurnOffPPU
+  ;JSR LUI_BONUS_CHANCE_LOAD
 ENDIF
 
 	JSR ClearNametablesAndSprites
+  ;JMP NoCoinsForSlotMachine ; Always skip bonus? CHANGE
 
 IFDEF REV_A
 	JSR EnableNMI
@@ -1551,7 +1577,8 @@ ENDIF
 	JSR LoadBonusChanceCHRBanks
 
 IFNDEF BONUS_CHANCE_RAM_CLEANUP
-	JSR CopyUnusedCoinSpriteToSpriteArea
+	;JSR CopyUnusedCoinSpriteToSpriteArea
+  JSR LUI_BONUS_CHANCE_LOAD ; CHANGE HIJACK
 ENDIF
 
 	LDA #PRGBank_A_B
@@ -1563,19 +1590,22 @@ ENDIF
 	STA ScreenUpdateIndex
 	LDA #Stack100_Menu
 	STA StackArea
-	JSR EnableNMI
+	;JSR EnableNMI CHANGE HIJACK
+  JSR LUI_ENABLE_NMI_8X8
 
 	JSR WaitForNMI
 
 	LDA #Stack100_Gameplay
 	STA StackArea
-	JSR DisableNMI
+;	JSR DisableNMI CHANGE HIJACK
+  JSR LUI_DISABLE_NMI_8X8
 
 	JSR sub_BANKF_EA33
 
 	LDA #Music2_SlotWarpFanfare
 	STA MusicQueue2
-	LDA SlotMachineCoins
+;	LDA SlotMachineCoins
+  JMP NoCoinsForSlotMachine ; Check updated source code
 	BNE loc_BANKF_E7F2
 
 	JMP NoCoinsForSlotMachine
@@ -2025,11 +2055,15 @@ SetBonusChancePalette:
 ; =============== S U B R O U T I N E =======================================
 
 sub_BANKF_EA68:
-	LDY ExtraLives
-	DEY
-	TYA
-	JSR GetTwoDigitNumberTiles
-	STY byte_RAM_599
+  LDA #$40
+  STA StackArea ; Stack area
+  JSR LUI_ENABLE_NMI_8X8
+  JMP $EAAB ; LABEL CHANGE LATER HIJACK TOO
+	;LDY ExtraLives
+	;DEY
+	;TYA
+	;JSR GetTwoDigitNumberTiles
+	;STY byte_RAM_599
 	STA byte_RAM_59A
 
 	LDA SlotMachineCoins
@@ -2103,8 +2137,10 @@ WaitForNMI:
 	LDA #$00
 	STA NMIWaitFlag ; Start waiting for NMI to finish
 WaitForNMILoop:
-	LDA NMIWaitFlag ; Has the NMI routine set the flag yet?
-	BPL WaitForNMILoop ; If no, wait some more
+  JMP LUI_EveryFrame
+	;LDA NMIWaitFlag ; Has the NMI routine set the flag yet?
+	;BPL WaitForNMILoop ; If no, wait some more
+  .db $FC
 
 	RTS ; If yes, go back to what we were doing
 
@@ -2427,7 +2463,8 @@ NMI_DrawBackgroundAttributesInnerLoop:
 NMI_AfterBackgroundAttributesUpdate:
 	JSR UpdatePPUFromBufferNMI
 
-	JSR ResetPPUAddress
+	;JSR ResetPPUAddress
+  JMP LUI_NMI_SRITE_SIZE_FIX ; CHANGE HIJACK...?
 
 	LDA #PPUCtrl_Base2000 | PPUCtrl_WriteHorizontal | PPUCtrl_Sprite0000 | PPUCtrl_Background1000 | PPUCtrl_SpriteSize8x16 | PPUCtrl_NMIEnabled
 	ORA PPUScrollXHiMirror
@@ -2479,9 +2516,10 @@ NMI_Exit:
 	TAY
 	PLA
 	TAX
-	PLA
-	PLP
-	RTI
+  JMP LUI_NMI_EXIT ; CHANGE
+	;PLA
+	;PLP
+	;RTI
 
 ; End of function NMI
 
@@ -2730,6 +2768,346 @@ UpdatePPUFBWO_CopySingleTileSkip:
 	; (If the PPU buffer points to a 0, it will terminate after this jump)
 	JMP UpdatePPUFromBufferWithOptions
 
+LUI_NMI_EXIT:
+  INC Counter60hz
+  PLA
+  PLP
+  RTI
+
+LUI_NMI_SRITE_SIZE_FIX:
+  JSR $EC68
+  LDA Force8x8SpriteSize
+  BNE RandomLabel01
+  JMP $EC25
+RandomLabel01:
+  LDA #$90
+  JMP $EC27
+
+LUI_EveryFrame:
+	LDA Counter60hz
+	SEC
+	SBC Previous60hz
+	BEQ LUI_WAIT_FOR_NMI
+	TAY
+		
+	CLC
+	ADC RealFramesElapsed ; ????
+	STA RealFramesElapsed
+		
+	DEY
+	TYA
+	ADC DroppedFrames
+	BCC RandomLabel02
+	LDA #$FF
+
+RandomLabel02:	
+  STA DroppedFrames
+  LDA Counter60hz
+	STA Previous60hz
+		
+LUI_WAIT_FOR_NMI:
+	LDA NMIWaitFlag
+	BPL LUI_WAIT_FOR_NMI
+	RTS
+
+LUI_PreStartLevel:
+	LDA DontResetLevelTimer
+	BNE RandomLabel03
+	INC ResetLevelTimer
+RandomLabel03:
+  JMP $E1F4
+
+LUI_LEVEL_INIT:
+	STA DroppedFrames
+	STA RoomTimerFrames
+	STA RoomTimerSeconds
+	STA RoomTimerMinutes
+	STA DontResetLevelTimer
+	INC IsFirstFrameOfRoom
+	
+	LDY ResetLevelTimer
+	BEQ RandomLabel04
+	STA RealFramesElapsed
+	STA LevelTimerFrames
+	STA LevelTimerSeconds
+	STA LevelTimerMinutes
+	STA ResetLevelTimer
+RandomLabel04:
+	INC AreaInitialized
+	RTS
+
+
+LUI_LEVEL_LOAD_HIJACK:
+	JSR HideAllSprites
+	LDA ResetLevelTimer
+	BNE LUI_SKIP_TIMER_DISPLAY
+	INC Force8x8SpriteSize
+	JSR LUI_DRAW_SPRITE_TIMER
+LUI_SKIP_TIMER_DISPLAY:
+		; jmp LUI_TURN_OFF_PPU_EXCEPT_SPRITES
+
+
+LUI_TURN_OFF_PPU_EXCEPT_SPRITES:
+	LDA #$10
+	JMP $EAA9
+		
+		
+LUI_SUB_AREA_LOAD:
+	LDA #$10
+	; rest of ClearNametablesAndSprites
+	JSR $EC8C
+	LDA #$90
+	STA PPUCTRL
+	STA PPUCtrlMirror
+	INC Force8x8SpriteSize
+	JMP LUI_DRAW_SPRITE_TIMER
+		
+
+LUI_SUB_AREA_BEGIN_EXIT:
+	JSR HideAllSprites ; HideAllSprites
+	INC Force8x8SpriteSize
+	JSR LUI_DRAW_SPRITE_TIMER
+	JMP LUI_TURN_OFF_PPU_EXCEPT_SPRITES
+		
+LUI_SUB_AREA_FINISH:
+LUI_SUB_AREA_INIT:
+LUI_LEVEL_LOAD_FINISHED:
+	JSR LoadWorldCHRBanks
+	LDA #0
+	STA Force8x8SpriteSize
+	JSR HideAllSprites
+	JMP WaitForNMI_TurnOnPPU
+
+LUI_WARP_LOAD:
+	JSR LUI_DRAW_SPRITE_TIMER
+	INC Force8x8SpriteSize
+	; jmp enable_nmi_8x8
+
+LUI_ENABLE_NMI_8X8:
+	LDA #$90
+	STA PPUCTRL
+	STA PPUCtrlMirror
+	RTS
+
+
+LUI_DISABLE_NMI_8X8:
+	LDA #$10
+	STA PPUCTRL
+	STA PPUCtrlMirror
+	RTS
+		
+LUI_BONUS_CHANCE_LOAD:
+		; jmp LUI_DRAW_SPRITE_TIMER
+
+LUI_DRAW_SPRITE_TIMER:
+	LDA #$3B
+	STA $06FA
+	
+	LDY #$00
+	LDA #LUI_LEVEL_TIMER_Y_POS
+	STA $00
+	LDA #LUI_LEVEL_TIMER_X_POS
+	STA $01
+	LDA #LUI_COUNTERS_ATTRIBUTES
+	STA $02
+	LDA LevelTimerMinutes
+	JSR LUI_DRAW_DECIMAL_COUNTER
+	LDA LevelTimerSeconds
+	JSR LUI_DRAW_DECIMAL_COUNTER
+	LDA LevelTimerFrames
+	JSR LUI_DRAW_DECIMAL_COUNTER
+
+	LDA #LUI_ROOM_TIMER_Y_POS
+	STA $00
+	LDA #LUI_ROOM_TIMER_X_POS
+	STA $01
+	LDA RoomTimerMinutes
+	JSR LUI_DRAW_DECIMAL_COUNTER
+	LDA RoomTimerSeconds
+	JSR LUI_DRAW_DECIMAL_COUNTER
+	LDA RoomTimerFrames
+	JSR LUI_DRAW_DECIMAL_COUNTER
+	
+	LDA #LUI_DROPPED_FRAMES_Y_POS
+	STA $00
+	LDA #LUI_DROPPED_FRAMES_X_POS
+	STA $01
+	LDA DroppedFrames
+	; jmp draw_hex_counter
+		
+; input:
+; $00 = y pos
+; $01 = x pos
+; $02 = attributes
+; Y = oam index
+LUI_DRAW_HEX_COUNTER:
+	TAX
+	LSR
+	LSR
+	LSR
+	LSR
+	ORA #$50
+	STA $0201, Y
+	TXA
+	AND #$0F
+	ORA #$50
+	STA $0205, Y
+	
+	LDA $00
+	STA $0200, Y
+	STA $0204, Y
+
+	LDA $01
+	STA $0203, Y
+	CLC
+	ADC #8
+	STA $0207, Y
+	ADC #8
+	STA $01
+
+	LDA $02
+	STA $0202, Y
+	STA $0206, Y
+
+	TYA
+	ADC #8
+	TAY
+	RTS
+
+; input:
+; $00 = y pos
+; $01 = x pos
+; $02 = attributes
+; Y = oam index
+LUI_DRAW_DECIMAL_COUNTER:
+  LDX #00
+hex2dec:
+  CMP #10
+  BCC hex2decDone
+  SBC #10
+  INX
+  BCS hex2dec ; Off range F5 vs F7...?
+hex2decDone:
+	ORA #$50
+	STA $0205, Y
+	TXA
+	ORA #$50
+	STA $0201, Y
+	
+	LDA $00
+	STA $0200, Y
+	STA $0204, Y
+	
+	LDA $01
+	STA $0203, Y
+	ADC #8
+	STA $0207, Y
+	ADC #8
+	STA $01
+	
+	LDA $02
+	STA $0202, Y
+	STA $0206, Y
+	
+	TYA
+	ADC #8
+	TAY
+	RTS
+
+LUI_PRE_ENDING_SCENE:
+	JSR HideAllSprites
+	INC Force8x8SpriteSize
+	JSR LUI_DRAW_SPRITE_TIMER
+	; play jingle
+	LDA #$01
+	STA MusicQueue2
+	JSR Delay160Frames
+	LDA #0
+	STA Force8x8SpriteSize
+	JMP $E956
+
+LUI_LEVEL_TICK:
+	JSR LUI_UPDATE_TIMER
+	LDA SkyFlashTimer
+	RTS
+
+LUI_UPDATE_TIMER:
+LUI_LEVEL_TIMER_TICK:
+	LDA LevelTimerFrames
+	CLC
+	ADC RealFramesElapsed
+	STA LevelTimerFrames
+	CMP #60
+	BCC LUI_DONE_UPDATE_TIMER
+LUI_TICK_SECONDS:
+	SBC #60
+	STA LevelTimerFrames
+	LDA LevelTimerSeconds
+	ADC #0
+	STA LevelTimerSeconds
+	CMP #60
+	BCC LUI_CHECK_IF_DONE
+
+	SBC #60
+	STA LevelTimerSeconds
+	LDA LevelTimerMinutes
+	ADC #0
+	CMP #10
+	BCC LUI_NO_CAP
+	LDA #59
+	STA LevelTimerFrames
+	STA LevelTimerSeconds
+	LDA #9
+
+LUI_NO_CAP:
+	STA LevelTimerMinutes
+		
+LUI_CHECK_IF_DONE:
+	LDA LevelTimerFrames
+	CMP #60
+	BCS LUI_TICK_SECONDS
+		
+LUI_DONE_UPDATE_TIMER:
+
+LUI_ROOM_TIMER_TICK:
+	LDA IsFirstFrameOfRoom
+	BNE LUI_DONE_UPDATE_TIMER_01
+	LDA RoomTimerFrames
+	CLC
+	ADC RealFramesElapsed
+	STA RoomTimerFrames
+	CMP #60
+	BCC LUI_DONE_UPDATE_TIMER_01
+
+	SBC #60
+	STA RoomTimerFrames
+	LDA RoomTimerSeconds
+	ADC #0
+	STA RoomTimerSeconds
+	CMP #60
+	BCC LUI_DONE_UPDATE_TIMER_01
+
+	SBC #60
+	STA RoomTimerSeconds
+	LDA RoomTimerMinutes
+	ADC #0
+	CMP #10
+	BCC LUI_NO_CAP_01
+	LDA #59
+	STA RoomTimerFrames
+	STA RoomTimerSeconds
+	LDA #9
+
+LUI_NO_CAP_01:
+	STA RoomTimerMinutes
+
+LUI_DONE_UPDATE_TIMER_01:
+  LDA #0
+  STA RealFramesElapsed
+  STA IsFirstFrameOfRoom
+  RTS
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 IF INES_MAPPER == MAPPER_FME7
 RESET_FME7:
@@ -5731,6 +6109,211 @@ FindSpriteSlot_CheckInactiveSlot:
 	CMP #$F8
 	BNE FindSpriteSlot_LoopNext
 	BEQ FindSpriteSlot_Exit
+
+LUI_PAUSE_INIT:
+	; draw PAUSE text which will be static
+	LDA #$0D
+	STA ScreenUpdateIndex
+	; initalize selected level
+	LDA CurrentWorld
+	STA $0E
+	LDA CurrentLevel
+	STA $0F
+	; initialize up/down hold counters
+	LDA #$09 ; level_select_holdoff
+	STA $0C
+	STA $0D
+	RTS
+
+LUI_PAUSE_TICK:
+	JSR LUI_UPDATE_TIMER
+	
+	; press up/down to select a level
+	LDA #$08
+	BIT Player1JoypadHeld
+	BEQ LUI_NOT_HOLDING_UP
+	BIT Player1JoypadPress
+	BNE LUI_INC_LEVEL
+	; increase level every so often when holding up
+	DEC $0C
+	BPL LUI_NOT_HOLDING_DOWN
+	LDA #$02 ; Level select speed constant
+	STA $0C
+
+LUI_INC_LEVEL:
+	LDX $0F
+	INX
+	CPX #$14
+	BCC RandomLabel05
+	LDX #0
+RandomLabel05:
+  STX $0F
+	LDA LUI_WORLD_NUMBER_ARRAY, X
+	STA $0E
+	JMP LUI_SELECT_LEVEL_CHANGE
+
+LUI_NOT_HOLDING_UP:
+	LDA #$09 ; level_select_holdoff
+	STA $0C
+
+	LDA #$04
+	BIT Player1JoypadHeld
+	BEQ LUI_NOT_HOLDING_DOWN
+	BIT Player1JoypadPress
+	BNE LUI_DEC_LEVEL
+	; decrease level every so often when holding down
+	DEC $0D
+	BPL LUI_CHECK_WARP
+	LDA #$02 ; Level select speed constant
+	STA $0D
+
+LUI_DEC_LEVEL:
+	LDX $0F
+	DEX
+	BPL RandomLabel06
+	LDX #$13
+RandomLabel06:
+  STX $0F
+	LDA LUI_WORLD_NUMBER_ARRAY, X
+	STA $0E
+		
+LUI_SELECT_LEVEL_CHANGE:
+	JSR LUI_UPDATE_LEVEL_SELECT_TEXT
+	BNE LUI_CHECK_WARP
+		
+LUI_NOT_HOLDING_DOWN:
+	LDA #$09 ; level select hold off
+	STA $0D
+		
+		; press select to warp to selected level
+LUI_CHECK_WARP
+	LDA Player1JoypadPress
+	AND #$20
+	BNE LUI_WARP
+	JMP $E521
+
+LUI_WARP:
+		; see ResetAreaAndProcessGameMode
+	JSR DoAreaReset
+	LDY #$0
+	STY GameMode
+	STY StarInvincibilityTimer
+	STY BigVeggiesPulled
+	STY CherryCount
+	STY StopwatchTimer
+	STY PlayerMaxHealth
+	STY KeyUsed
+	STY Mushroom1upPulled
+	STY Mushroom1Pulled
+	STY Mushroom2Pulled
+	STY SubspaceVisits
+	STY PlayerLock
+	STY HoldingItem
+	STY ObjectBeingCarriedIndex
+	STY ObjectCarriedOver
+	STY PlayerXVelocity
+	STY PlayerYVelocity
+	STY PlayerYVelocity_Init
+	STY PlayerInRocket ; Check there 2 value to reset?
+	STY VegetableThrowerShotCounter
+	STY PlayerState_Init
+	STY CurrentLevelArea_Init
+	STY CurrentLevelEntryPage_Init
+	STY TransitionType_Init
+	STY CurrentLevelArea
+	STY CurrentLevelEntryPage
+	STY TransitionType
+	STY DoorAnimationTimer
+	STY PlayerRidingCarpet
+	LDA #$1F
+	STA PlayerHealth
+	JSR LevelInitialization
+	
+	; set world and level numbers
+	LDX $0E
+	STX CurrentWorld
+	LDY $0F
+	STY CurrentLevel
+	STY CurrentLevel_Init
+	TYA
+	SEC
+	SBC WorldStartingLevel, Y
+	STA CurrentLevelRelative
+			
+	; destroy all sprites
+	LDX #$08
+	LDA #0
+RandomLabel07:
+  STA ObjectType, X
+	STA EnemyState, X
+	STA ObjectBeingCarriedTimer, X
+	STA ObjectProjectileTimer, X
+	DEX
+	BPL RandomLabel07
+
+	LDA #$C0
+	STA StackArea
+	JMP LevelStartCharacterSelectMenu
+
+; $0E: selected world number
+; $0F: selected level number
+; uses $03 and $0B
+LUI_UPDATE_LEVEL_SELECT_TEXT:
+	; world number
+	LDX $0E
+	INX
+	TXA
+	ORA #$D0
+	STA TitleCard_World
+	
+	; clear level dots
+	LDY #$06
+	LDA #$FB
+RandomLabel08:
+  STA TitleCard_LevelDots, Y
+	DEY
+	BPL RandomLabel08
+	
+	; level number
+	LDY $0E
+	LDA $0F
+	SEC
+	SBC WorldStartingLevel, Y
+	STA $0B
+	CLC
+	ADC #$D1
+	STA TitleCard_Level
+	
+	; level dots
+	LDA WorldStartingLevel + 1, Y
+	SEC
+	SBC WorldStartingLevel, Y
+	STA $03
+	LDX #0
+	LDY #0
+RandomLabel09:
+  LDA #$FD
+	CPX $0B
+	BNE RandomLabel10
+	LDA #$F6
+RandomLabel10:
+  STA TitleCard_LevelDots, Y
+	INY
+	INY
+	INX
+	CPX $03
+	BCC RandomLabel09
+	
+	; screen update
+	LDA #$08
+	STA ScreenUpdateIndex
+	RTS
+
+		
+LUI_WORLD_NUMBER_ARRAY:
+	.db $0, $0, $0, $1, $1, $1, $2, $2
+	.db $2, $3, $3, $3, $4, $4, $4, $5
+	.db $5, $5, $6, $6
 
 
 IFDEF DEBUG

@@ -72,16 +72,13 @@ fi
 
 echo 'Build succeeded.'
 
-if compareHash $PRG0 'bin/smb2.nes' -eq 0 ; then
-	echo 'Matched PRG0 ROM'
-	exit 0
-elif compareHash $PRG1 'bin/smb2.nes' -eq 0 ; then
-	echo 'Matched PRG1 ROM'
-	exit 0
-else
-	echo 'Did not match either ROM'
-	exit -1
-fi
-
-
-
+# if compareHash $PRG0 'bin/smb2.nes' -eq 0 ; then
+# 	echo 'Matched PRG0 ROM'
+# 	exit 0
+# elif compareHash $PRG1 'bin/smb2.nes' -eq 0 ; then
+# 	echo 'Matched PRG1 ROM'
+# 	exit 0
+# else
+# 	echo 'Did not match either ROM'
+# 	exit -1
+# fi

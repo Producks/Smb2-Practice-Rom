@@ -262,9 +262,9 @@ EnemyMovementDirection:
 	.dsb 1 ; 8                ; $0077
 
 ; FOR RENT
+Force8x8SpriteSize:
 IFDEF PLAYER_HITBOX
 PlayerHitbox:
-Force8x8SpriteSize:
 ENDIF
 	.dsb 1 ; $0078
 ; This is set on entering subspace, depending

@@ -47,7 +47,8 @@ AreaMainRoutine_NoTransition:
 ; ---------------------------------------------------------------------------
 
 AreaInitialization:
-	INC AreaInitialized
+  JSR LUI_LEVEL_INIT
+	;INC AreaInitialized
 	STA byte_RAM_5BA
 	STA POWQuakeTimer
 	STA SkyFlashTimer
@@ -12377,7 +12378,8 @@ SkyFlashColors:
 ; =============== S U B R O U T I N E =======================================
 
 AreaSecondaryRoutine:
-	LDA SkyFlashTimer
+	;LDA SkyFlashTimer
+  JSR LUI_LEVEL_TICK
 	BEQ AreaSecondaryRoutine_HealthBar
 
 	; sky flash timer (ie. explosions)
