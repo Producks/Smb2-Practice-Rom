@@ -39,7 +39,7 @@ ScreenUpdateBufferPointers:
 	.dw PPUBuffer_NoBonusText
 	.dw PPUBuffer_PushAButtonText
 	.dw PPUBuffer_Player1UpText
-	.dw PPUBuffer_PauseText
+	.dw PPUBuffer_TitleCardTime
 	.dw PPUBuffer_ErasePauseText
 	.dw PPUBuffer_EraseBonusMessageText
 	.dw PPUBuffer_ErasePushAButton
@@ -182,6 +182,10 @@ PPUBuffer_TitleCard:
 PPUBuffer_PauseExtraLife:
 	.db $27, $EA, $05
 	.db $AA, $AA, $AA, $AA, $AA
+  .db $27, $DB, $02
+  .db $AA, $AA
+  .db $27, $E4, $01
+  .db $AA
 
 ; This draws two columns of black tiles along the right side of the nametable to the left of the
 ; title card, which was the character/level select in Doki Doki Panic. In SMB2, it remains unused.
@@ -427,6 +431,76 @@ EnableNMI_PauseTitleCard:
 
 	JMP WaitForNMI
 
+;
+GetTwoDigitNumberTilesWithZero:
+	LDY #$D0
+GetTwoDigitNumberTiles_TensLoopWithZero:
+	CMP #$0A
+	BCC GetTwoDigitNumberTiles_OnesWithZero
+	SBC #$0A
+	INY
+	JMP GetTwoDigitNumberTiles_TensLoopWithZero
+GetTwoDigitNumberTiles_OnesWithZero:
+	ORA #$D0
+	CPY #$D0
+	BNE GetTwoDigitNumberTiles_ExitWithZero
+	LDY #$D0
+GetTwoDigitNumberTiles_ExitWithZero:
+	RTS
+
+LoadIntoBufferCardTime:
+  JSR GetTwoDigitNumberTilesWithZero
+  STA PPUBuffer_TitleCardTime + 1, X
+  TYA
+  STA PPUBuffer_TitleCardTime, X
+  INX
+  INX
+  RTS
+
+; Routine that load the info for the timer in the buffer
+DisplayTitleCardTime:
+MaintimeTitleCardSetup:
+  LDA #$25
+  STA PPUBuffer_TitleCardTime
+  LDA #$8D
+  STA PPUBuffer_TitleCardTime + 1
+  LDA #$06
+  STA PPUBuffer_TitleCardTime + 2
+  LDX #$03
+  LDA LevelTimerMinutes
+  JSR LoadIntoBufferCardTime
+  LDA LevelTimerSeconds
+  JSR LoadIntoBufferCardTime
+  LDA LevelTimerFrames
+  JSR LoadIntoBufferCardTime
+RoomTimerCardSetup:
+  LDA #$25
+  STA PPUBuffer_TitleCardTime, X
+  LDA #$CD
+  STA PPUBuffer_TitleCardTime + 1, X
+  LDA #$06
+  STA PPUBuffer_TitleCardTime + 2, X
+  LDX #$0C
+  LDA RoomTimerMinutes
+  JSR LoadIntoBufferCardTime
+  LDA RoomTimerSeconds
+  JSR LoadIntoBufferCardTime
+  LDA RoomTimerFrames
+  JSR LoadIntoBufferCardTime
+LagFrameCardSetup:
+  LDA #$26
+  STA PPUBuffer_TitleCardTime, X
+  LDA #$11
+  STA PPUBuffer_TitleCardTime + 1, X
+  LDA #$02
+  STA PPUBuffer_TitleCardTime + 2, X
+  LDX #$15
+  LDA DroppedFrames
+  JSR LoadIntoBufferCardTime
+EndCardSetup:
+  LDA #$00
+  STA PPUBuffer_TitleCardTime, X ; Null character
+  RTS
 
 ;
 ; Draws world info for the title card and pause screens
@@ -2001,6 +2075,7 @@ PauseScreen_Card_ScreenReset:
 	LDX CurrentWorld
 	LDY CurrentLevel
 	JSR DisplayLevelTitleCardText
+  JSR DisplayTitleCardTime
 
 	LDA #$FF
 	STA PPUScrollXMirror

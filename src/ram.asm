@@ -2225,6 +2225,8 @@ IFDEF CONTROLLER_2_DEBUG
 	CreateObjectAttributes = $7e83
 ENDIF
 
+PPUBuffer_TitleCardTime = $7E10
+
 ItemCarryYOffsetsRAM = $7f00
 
 MMC3_BankSelect = $8000
