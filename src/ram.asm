@@ -2229,6 +2229,9 @@ PPUBuffer_TitleCardTime = $7E10
 
 ItemCarryYOffsetsRAM = $7f00
 
+PPUBuffer_TitleScreenLevelSelect = $7f00
+PPUBuffer_TitleScreenHpBar = $7f06
+
 MMC3_BankSelect = $8000
 MMC3_BankData = $8001
 MMC3_Mirroring = $a000
