@@ -94,3 +94,9 @@ TitleAttributeData2:
 
 LevelSelectDigits:
   .db $22, $F5, $03, $D1, $F4, $D1
+  .db $00
+
+;Global Timer
+HpOption:
+  .db $23, $30, $0C, $E0, $E5, $E8, $DB, $DA, $E5, $FA, $ED, $E2, $E6, $DE, $EB
+  .db $00

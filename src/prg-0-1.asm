@@ -4922,8 +4922,6 @@ ENDIF
 
 ; =============== S U B R O U T I N E =======================================
 
-
-
 IFDEF RESPAWN_INSTEAD_OF_DEATH
 HandlePlayerState_Respawning:
 	; Start from zero
