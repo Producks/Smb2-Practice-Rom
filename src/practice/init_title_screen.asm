@@ -1,31 +1,62 @@
 TitleScreenPPUDataPointers:
 	.dw PPUBuffer_301
 	.dw TitleLayout
-  .dw PPUBuffer_TitleScreenLevelSelect
-  .dw PPUBuffer_TitleScreenHpBar
+  .dw PPUBuffer_TitleScreen
 
-InitBufferLevelSelect:
-  LDY #$00
-LoopInitBufferLevelSelect:
-  LDA LevelSelectDigits, Y
-  STA PPUBuffer_TitleScreenLevelSelect, Y
-  INY
-  CPY #$07
-  BNE LoopInitBufferLevelSelect
-ExitInitBufferLevelSelect:
+SpriteTitleScreenDMAInfo:
+  .db $AE, $C1, $00, $2A ; CursorFirstPart
+  .db $AE, $C3, $00, $32 ; CursorSecondPart
+  .db $8E, $A1, $01, $2A ; ShyGuy Left half B
+  .db $8E, $A3, $01, $32 ; Shyguy right half F
+
+DrawLostLevel:
+	LDA PPUSTATUS
+	LDA #$23
+	LDY #$40
+	STA PPUADDR
+	STY PPUADDR
+  JSR FloorTile
+  JSR FloorTile
+  RTS
+FloorTile:
+  LDA #$BC
+  LDY #$BE
+  JSR CounterDrawFloorLostLevel
+  LDA #$BD
+  LDY #$BF
+  JSR CounterDrawFloorLostLevel
   RTS
 
-InitBufferHp:
-  LDY #$00
-LoopInitBufferHp:
-  LDA HpOption, Y
-  STA PPUBuffer_TitleScreenHpBar, Y
+CounterDrawFloorLostLevel:
+  LDX #$00
+LoopDrawFloorLostLevel:
+  STA PPUDATA
+  STY PPUDATA
+  INX
+  CPX #$10
+  BNE LoopDrawFloorLostLevel
+  RTS
+
+CopyDMADataTitleScreen:
+  LDY #$00 ; Index
+CopyDMADataTitleScreenLoop:
+  LDA SpriteTitleScreenDMAInfo, Y
+  STA SpriteDMAArea, Y
   INY
   CPY #$10
-  BNE LoopInitBufferHp
-ExitInitBufferHp:
+  BNE CopyDMADataTitleScreenLoop
   RTS
 
+InitPPUBufferTitleScreen:
+  LDY #$00
+LoopInitPPUBufferTitleScreen:
+  LDA UpdateTitleScreen, Y
+  STA PPUBuffer_TitleScreen, Y
+  INY
+  CPY #$16
+  BNE LoopInitPPUBufferTitleScreen
+ExitInitBufferLevelSelect:
+  RTS
 
 WaitForNMI_TitleScreen_TurnOnPPU:
 	LDA #PPUMask_ShowLeft8Pixels_BG | PPUMask_ShowLeft8Pixels_SPR | PPUMask_ShowBackground | PPUMask_ShowSprites
@@ -47,7 +78,6 @@ WaitForNMI_TitleScreenLoop:
 	BPL WaitForNMI_TitleScreenLoop
 
 	RTS
-
 
 ;- Initilization of the title screen and rendering -;
 TitleScreen:
@@ -116,38 +146,16 @@ DrawTitleScreen:
 	JSR WaitForNMI_TitleScreen
 
   ; Setup PPU buffer in ram for level select
-  LDA #$02 ; Level update
+  LDA #$02 ; PPUbufferTitleScreen
   STA ScreenUpdateIndex
-  JSR InitBufferLevelSelect
-  JSR WaitForNMI_TitleScreen
-
-  LDA #$03
-  STA ScreenUpdateIndex
-  JSR InitBufferHp
+  JSR InitPPUBufferTitleScreen
   JSR WaitForNMI_TitleScreen
 
 	; Cue the music!
 	LDA #Music1_Subspace
 	STA MusicQueue1
+  JSR CopyDMADataTitleScreen
+  JSR DrawLostLevel
 	JSR WaitForNMI_TitleScreen_TurnOnPPU
-
-CursorFirstPart:
-  LDA #$B0
-  STA SpriteDMAArea
-  LDA #$C1
-  STA SpriteDMAArea + 1
-  LDA #$00
-  STA SpriteDMAArea + 2
-  LDA #$30
-  STA SpriteDMAArea + 3
-CursorSecondPart:
-  LDA #$B0
-  STA SpriteDMAArea + 4
-  LDA #$C3
-  STA SpriteDMAArea + 5
-  LDA #$00
-  STA SpriteDMAArea + 6
-  LDA #$38
-  STA SpriteDMAArea + 7
 
  ;- End of initilization of the title screen and rendering -;

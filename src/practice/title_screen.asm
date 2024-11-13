@@ -4,18 +4,34 @@
 TitleScreenLoop:
 ReadInput:
 	LDA Player1JoypadPress
-	AND #ControllerInput_Start
-	BNE QuitTitleScreen
+	CMP #ControllerInput_Start
+	BEQ QuitTrampoline
+  AND #ControllerInput_Up | ControllerInput_Down
+  BNE MoveCursor
+  LDA Player1JoypadPress
+  AND #ControllerInput_Left | ControllerInput_Right
+  BNE HandleSideInput
 
 WaitThenJmpToLoop:
-  INC SpriteDMAArea
-  INC SpriteDMAArea + 3
-  INC SpriteDMAArea + 4
-  INC SpriteDMAArea + 7
+  JSR AnimationTitleScreen
 	JSR WaitForNMI_TitleScreen
   JMP ReadInput
 
+QuitTrampoline:
+  JMP QuitTitleScreen ; Address is too far to branch out, so let's do it this way
+
 ;- Loop of the title screen end -; 
+
+.include "src/practice/title_screen_cursor.asm"
+
+HandleSideInput:
+  LDY CursorPosition
+  CPY #$00
+  BEQ LevelSelect
+  STA SoundEffectQueue2
+  JMP WaitThenJmpToLoop
+
+.include "src/practice/title_screen_level_select.asm"
 
 ;- Leave title screen start -;
 
@@ -24,7 +40,7 @@ QuitTitleScreen:
 	STA SoundEffectQueue1
   LDA #Music2_StopMusic
 	STA MusicQueue2
-	LDA #$D0
+;	LDA #$D0
 ;	JSR WaitTitleScreenTimer
 
 	LDA #$00
@@ -37,6 +53,28 @@ ZeroMemoryAfterTitleScreen: ; CREATED MASSIVE BUG IF AUDIO WAS GOING, MADE ME LO
 	BCC ZeroMemoryAfterTitleScreen
 
 	JMP HideAllSprites
+
+
+AnimationTitleScreen:
+  INC byte_RAM_10 ; Increase global timer
+  LDA byte_RAM_10
+  CMP #$06
+  BNE ScreenUpdateTitleScreenLoop
+  LDA #$00
+  STA byte_RAM_10
+ShyGuyAnimation:
+  LDA ShyGuy_Left_GFX
+  EOR #$04
+  STA ShyGuy_Left_GFX
+  LDA ShyGuy_Right_GFX
+  EOR #$04
+  STA ShyGuy_Right_GFX
+  DEC ShyGuy_Left_X
+  DEC ShyGuy_Right_X
+ScreenUpdateTitleScreenLoop:
+  LDA #$02 ; Screen update
+  STA ScreenUpdateIndex
+  RTS
 
 ;- Leave title screen end -;
 

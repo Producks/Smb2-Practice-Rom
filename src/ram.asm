@@ -89,6 +89,7 @@ TitleScreenStoryDone: ; RAM $0002 check will restart title screen when set
 	.dsb 1 ; 4                ; $0019
 MarioSnoringCounter6:
 TitleScreenStoryTextLineTimer: ; used to pause between writing lines of text
+CursorPosition:
 	.dsb 1 ; 5                ; $001a
 MarioSnoringCounter7:
 	.dsb 1 ; 6                ; $001b
@@ -2229,8 +2230,15 @@ PPUBuffer_TitleCardTime = $7E10
 
 ItemCarryYOffsetsRAM = $7f00
 
-PPUBuffer_TitleScreenLevelSelect = $7f00
-PPUBuffer_TitleScreenHpBar = $7f07
+PPUBuffer_TitleScreen = $7f00
+PPUBuffer_TitleScreen_World = $7F03
+PPUBuffer_TitleScreen_Level = $7F05
+PPUBuffer_TitleScreen_Color = $7F18
+
+ShyGuy_Left_GFX = $0209
+ShyGuy_Left_X = $020B
+ShyGuy_Right_GFX = $020D
+ShyGuy_Right_X = $020F
 
 MMC3_BankSelect = $8000
 MMC3_BankData = $8001
