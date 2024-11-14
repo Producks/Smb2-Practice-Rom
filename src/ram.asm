@@ -2235,10 +2235,10 @@ PPUBuffer_TitleScreen_World = $7F03
 PPUBuffer_TitleScreen_Level = $7F05
 PPUBuffer_TitleScreen_Color = $7F18
 
-ShyGuy_Left_GFX = $0209
-ShyGuy_Left_X = $020B
-ShyGuy_Right_GFX = $020D
-ShyGuy_Right_X = $020F
+ShyGuy_Left_GFX = $020D
+ShyGuy_Left_X = $020F
+ShyGuy_Right_GFX = $0211
+ShyGuy_Right_X = $0213
 
 MMC3_BankSelect = $8000
 MMC3_BankData = $8001

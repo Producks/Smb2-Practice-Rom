@@ -1,5 +1,5 @@
 CursorYPosition:
-  .db $AE, $BE, $CE
+  .db $8E, $9E, $B7
 
 MoveCursor:
   CMP #ControllerInput_Up
@@ -25,6 +25,5 @@ HandleUnderFlow:
 UpdateCursor:
   LDA CursorYPosition, Y
   STA SpriteDMAArea
-  STA SpriteDMAArea + 4
 LeaveMoveCursor:
   JMP WaitThenJmpToLoop

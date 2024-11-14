@@ -4,10 +4,11 @@ TitleScreenPPUDataPointers:
   .dw PPUBuffer_TitleScreen
 
 SpriteTitleScreenDMAInfo:
-  .db $AE, $C1, $00, $2A ; CursorFirstPart
-  .db $AE, $C3, $00, $32 ; CursorSecondPart
-  .db $8E, $A1, $01, $2A ; ShyGuy Left half B
-  .db $8E, $A3, $01, $32 ; Shyguy right half F
+  .db $8E, $01, $03, $55 ; Mushroom Cursor
+  .db $C0, $9D, $00, $29 ; Mario Left half
+  .db $C0, $9F, $00, $31 ; Mario Right half
+  .db $C0, $A1, $21, $2A ; ShyGuy Left half B
+  .db $C0, $A3, $21, $32 ; Shyguy right half F
 
 DrawLostLevel:
 	LDA PPUSTATUS
@@ -43,7 +44,7 @@ CopyDMADataTitleScreenLoop:
   LDA SpriteTitleScreenDMAInfo, Y
   STA SpriteDMAArea, Y
   INY
-  CPY #$10
+  CPY #$14
   BNE CopyDMADataTitleScreenLoop
   RTS
 

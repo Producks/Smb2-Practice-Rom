@@ -12,60 +12,62 @@
     .db $20, $C5, $0A, $84, $86, $88, $88, $88, $8A, $88, $8C, $88, $8E
     .db $20, $E5, $0A, $45, $47, $45, $49, $88, $4B, $45, $6C, $88, $4D
     .db $21, $05, $0A, $8F, $91, $8F, $91, $93, $FD, $8F, $8D, $93, $93
-  
     .db $21, $25, $17, $64, $6E, $66, $64, $66, $6A, $66, $68, $64, $66, $FD, $6A, $66, $6A, $66, $64, $66, $64, $66, $FD, $FD, $64, $66
-
     .db $21, $45, $17, $88, $44, $44, $88, $44, $88, $44, $88, $88, $44, $FD, $88, $44, $88, $44, $88, $44, $88, $44, $FD, $FD, $88, $44
-
     .db $21, $65, $17, $88, $88, $88, $88, $88, $88, $8E, $88, $88, $88, $FD, $88, $8E, $88, $8E, $88, $88, $84, $46, $FD, $FD, $48, $4A
-  
     .db $21, $85, $17, $88, $88, $88, $25, $27, $88, $29, $88, $88, $88, $FD, $88, $6F, $88, $4F, $88, $88, $8B, $89, $FD, $FD, $87, $85
-
     .db $21, $A5, $17, $88, $88, $88, $88, $65, $88, $88, $88, $45, $49, $FD, $88, $49, $88, $88, $45, $49, $45, $49, $67, $FD, $6B, $6D
-
     .db $21, $C4, $19, $B7, $9B, $9B, $9B, $9B, $9B, $9B, $9B, $9B, $95, $97, $B9, $9B, $97, $9B, $9B, $95, $97, $95, $97, $9B, $B9, $9B, $99, $BB
-   ; .db $24, $C4, $0F, $
 
-  ; Mario
+DrawMarioText:
   .db $20, $43, $05, $E6, $DA, $EB, $E2, $E8
 
-  ; World Time
+DrawWorldAndtime:
   .db $20, $52, $0B, $F0, $E8, $EB, $E5, $DD, $FA, $FA, $ED, $E2, $E6, $DE
 
-  ; Score digits and coins
+DrawScoreAndCoingsDigits:
   .db $20, $63, $0C, $D0, $D0, $D0, $D0, $D0, $D0, $FF, $FF, $CC, $CD, $D0, $D0
 
-  ; Practice rom Ver 0.1
+DrawPracticeRomText:
   .db $21, $E9, $14, $E9, $EB, $DA, $DC, $ED, $E2, $DC, $DE, $FA, $EB, $E8, $E6, $FA, $EF, $DE, $EB, $FA, $1A, $1C, $1E
 
-  ; Level Select 1-1
-  .db $22, $4D, $0C, $E5, $DE, $EF, $DE, $E5, $FB, $EC, $DE, $E5, $DE, $DC, $ED
-
-  ; Cloud
+DrawCloud:
   .db $20, $C2, $02, $04, $06
   .db $20, $E1, $03, $03, $05, $07
   .db $21, $01, $03, $22, $24, $26
 
-  ; Mushroom background
+DrawMushroomBackground:
   .db $23, $1C, $04, $7C, $7E, $7C, $7E
   .db $23, $3C, $04, $7D, $7F, $7D, $7F
 
-  ;treessss
+DrawTreessss:
   .db $22, $D6, $84, $59, $79, $98, $98
   .db $22, $D7, $84, $5B, $7B, $9A, $9A
   .db $22, $9A, $86, $59, $78, $78, $79, $98, $98
   .db $22, $9B, $86, $5B, $7A, $7A, $7B, $9A, $9A
 
-; Hp bar: Regular
-DrawHpBar:
-  .db $22, $8D, $07, $E1, $E9, $FA, $DB, $DA, $EB, $CE
+DrawCastle:
+  .db $22, $02, $06, $0A, $0C, $0A, $0C, $0A, $0C
+  .db $22, $22, $46, $0B
+  .db $22, $42, $06, $0B, $FE, $0B, $0B, $FE, $0B
+  .db $22, $62, $06, $0B, $FE, $0B, $0B, $FE, $0B
+  .db $22, $80, $0A, $0A, $0C, $2A, $2C, $2A, $2C, $2A, $2C, $0A, $0C
+  .db $22, $A0, $4A, $0B
+  .db $22, $C0, $4A, $0B
+  .db $22, $E0, $4A, $0B
+  .db $23, $00, $4A, $0B
+  .db $23, $20, $4A, $0B
+  .db $22, $C4, $84, $2B, $FE, $FE, $FE
+  .db $22, $C5, $84, $2D, $FE, $FE, $FE
+  
+DrawLevelSelectText:
+  .db $22, $4C, $0C, $E5, $DE, $EF, $DE, $E5, $FB, $EC, $DE, $E5, $DE, $DC, $ED
 
-; Regular
-; Global Timer
-; Sub pixel X
-; Sub pixel Y
-; Lag Frame
-; Vegg. Glitch
+DrawHpBar:
+  .db $22, $8C, $07, $E1, $E9, $FA, $DB, $DA, $EB, $CE
+
+DrawPauseOption:
+  .db $22, $EC, $06, $E9, $DA, $EE, $EC, $DE, $CE
 
 AttributeTitleScreen:
   .db $23, $C0, $48, $AA
@@ -79,10 +81,13 @@ AttributeTitleScreen:
   .db $23, $C2, $01, $EA
   .db $23, $C8, $01, $AA
   .db $23, $D0, $01, $AA
-;	.db $23, $CA, $04, $20, $A0, $A0, $20
-;	.db $23, $D1, $0E, $80, $A8, $AA, $AA, $A2, $22, $00, $00, $88, $AA, $AA, $AA, $AA, $22
-;	.db $23, $E3, $02, $88, $22
-;	.db $23, $EA, $04, $F0, $F8, $F2, $F0
+  .db $23, $E0, $43, $55
+  .db $23, $E8, $43, $55
+  .db $23, $E3, $43, $AA
+  .db $23, $EB, $42, $AA
+  .db $23, $ED, $01, $0A
+  .db $23, $EE, $01, $02
+  .db $23, $F3, $42, $5A
 	.db $00
 
 IFDEF PAD_TITLE_SCREEN_PPU_DATA
@@ -97,7 +102,7 @@ TitleBackgroundPalettes:
 
 TitleSpritePalettes:
 	.db $22, $16, $27, $18 ; Unused DDP character palettes
-	.db $0F, $1A, $30, $27 ; There are no sprites on the title screen,
+	.db $0F, $30, $25, $0F ; There are no sprites on the title screen,
 	.db $0F, $16, $30, $27 ; so these are totally unused
 	.db $0F, $0F, $36, $17
 
@@ -118,7 +123,14 @@ TitleAttributeData2:
 	.db $23, $E9, $01, $CC
 	.db $23, $EE, $01, $33
 
+
+; Regular
+; Global Timer
+; Sub pixel X
+; Sub pixel Y
+; Lag Frame
+; Vegg. Glitch
 UpdateTitleScreen:
   .db $20, $73, $03, $D1, $F4, $D1 ; Level Select
-;  .db $23, $10, $0C, $E0, $E5, $E8, $DB, $DA, $E5, $FA, $ED, $E2, $E6, $DE, $EB ; Hp bar option
+  .db $22, $AD, $0C, $E0, $E5, $E8, $DB, $DA, $E5, $FA, $ED, $E2, $E6, $DE, $EB ; Hp bar option
   .db $00
