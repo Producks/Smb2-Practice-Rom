@@ -949,10 +949,12 @@ ContinueGame:
 	STA ExtraLives
 
 GoToWorldStartingLevel:
-	LDX CurrentWorld
-	LDY WorldStartingLevel, X
-	STY CurrentLevel
-	STY CurrentLevel_Init
+;	LDX CurrentWorld
+;	LDY WorldStartingLevel, X
+;	STY CurrentLevel
+;	STY CurrentLevel_Init
+  LDA CurrentLevel ; TO DO DOUBLE CHECK IF BUG HERE LATER
+  STA CurrentLevel_Init
 
 LevelStartCharacterSelectMenu:
 	JSR DoCharacterSelectMenu

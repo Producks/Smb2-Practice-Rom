@@ -1,4 +1,5 @@
 LevelSelect:
+  LDA Player1JoypadPress
   AND #ControllerInput_Right
   BNE IncreaseLevelSelect
 DecreaseLevelSelect:

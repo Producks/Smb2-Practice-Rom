@@ -26,12 +26,12 @@ QuitTrampoline:
 
 SideInputFuncPointerLo:
 	.db <LevelSelect
-	.db <PlaceHolder
+	.db <HpOption
 	.db <PauseSelect
 
 SideInputFuncPointerHi:
 	.db >LevelSelect
-	.db >PlaceHolder
+	.db >HpOption
 	.db >PauseSelect
 
 HandleSideInput:
@@ -41,11 +41,10 @@ HandleSideInput:
   LDA SideInputFuncPointerHi, Y
   STA SideInputHi
   JMP (SideInputLo)
-PlaceHolder:
-PlaceHolder01:
-  JMP WaitThenJmpToLoop
 
 .include "src/practice/title_screen_level_select.asm"
+
+.include "src/practice/title_screen_hp.asm"
 
 .include "src/practice/title_screen_pause_option.asm"
 
@@ -55,7 +54,7 @@ QuitTitleScreen:
 ;	LDA #$D0
 ;	JSR WaitTitleScreenTimer
 
-	LDA #$00
+	LDA #$00 ; ???
 	TAY
 
 ZeroMemoryAfterTitleScreen: ; CREATED MASSIVE BUG IF AUDIO WAS GOING, MADE ME LOSE 2 HOURS
