@@ -54,7 +54,7 @@ LoopInitPPUBufferTitleScreen:
   LDA UpdateTitleScreen, Y
   STA PPUBuffer_TitleScreen, Y
   INY
-  CPY #$16
+  CPY #$1F
   BNE LoopInitPPUBufferTitleScreen
 ExitInitBufferLevelSelect:
   RTS
@@ -152,9 +152,6 @@ DrawTitleScreen:
   JSR InitPPUBufferTitleScreen
   JSR WaitForNMI_TitleScreen
 
-	; Cue the music!
-	LDA #Music1_Subspace
-	STA MusicQueue1
   JSR CopyDMADataTitleScreen
   JSR DrawLostLevel
 	JSR WaitForNMI_TitleScreen_TurnOnPPU

@@ -24,22 +24,34 @@ QuitTrampoline:
 
 .include "src/practice/title_screen_cursor.asm"
 
+SideInputFuncPointerLo:
+	.db <LevelSelect
+	.db <PlaceHolder
+	.db <PauseSelect
+
+SideInputFuncPointerHi:
+	.db >LevelSelect
+	.db >PlaceHolder
+	.db >PauseSelect
+
 HandleSideInput:
   LDY CursorPosition
-  CPY #$00
-  BEQ LevelSelect
-  STA SoundEffectQueue2
+  LDA SideInputFuncPointerLo, Y
+  STA SideInputLo
+  LDA SideInputFuncPointerHi, Y
+  STA SideInputHi
+  JMP (SideInputLo)
+PlaceHolder:
+PlaceHolder01:
   JMP WaitThenJmpToLoop
 
 .include "src/practice/title_screen_level_select.asm"
 
+.include "src/practice/title_screen_pause_option.asm"
+
 ;- Leave title screen start -;
 
 QuitTitleScreen:
-	LDA #SoundEffect1_1UP
-	STA SoundEffectQueue1
-  LDA #Music2_StopMusic
-	STA MusicQueue2
 ;	LDA #$D0
 ;	JSR WaitTitleScreenTimer
 

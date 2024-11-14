@@ -92,7 +92,9 @@ TitleScreenStoryTextLineTimer: ; used to pause between writing lines of text
 CursorPosition:
 	.dsb 1 ; 5                ; $001a
 MarioSnoringCounter7:
+SideInputLo:
 	.dsb 1 ; 6                ; $001b
+SideInputHi:
 MarioSnoringTheEndFrameCounter: ; controls writing speed
 	.dsb 1 ; 7                ; $001c
 MarioSnoringCounter9:
@@ -830,6 +832,7 @@ SpriteFlickerSlot:
 BossTileset:
 	.dsb 1 ; $0402
 ; FOR RENT
+BoolDynamicPause:
 	.dsb 1 ; $0403
 ; unused? written but never read
 PreviousCharacter:
@@ -2233,7 +2236,7 @@ ItemCarryYOffsetsRAM = $7f00
 PPUBuffer_TitleScreen = $7f00
 PPUBuffer_TitleScreen_World = $7F03
 PPUBuffer_TitleScreen_Level = $7F05
-PPUBuffer_TitleScreen_Color = $7F18
+PPUBuffer_TitleScreen_Pause_Text = $7F18
 
 ShyGuy_Left_GFX = $020D
 ShyGuy_Left_X = $020F
