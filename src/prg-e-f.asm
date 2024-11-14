@@ -6202,8 +6202,15 @@ LUI_PAUSE_INIT:
 
 LUI_PAUSE_TICK:
 	JSR LUI_UPDATE_TIMER
+  LDA BoolDynamicPause ; Might break here double check if something explode TODO
+  CMP #$00
+  BEQ NoDynamicTimer
+	LDA #$0D
+	STA ScreenUpdateIndex
+  JSR DisplayTitleCardTime
 	
 	; press up/down to select a level
+NoDynamicTimer:
 	LDA #$08
 	BIT Player1JoypadHeld
 	BEQ LUI_NOT_HOLDING_UP
