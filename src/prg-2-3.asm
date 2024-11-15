@@ -12380,7 +12380,7 @@ SkyFlashColors:
 AreaSecondaryRoutine:
 	;LDA SkyFlashTimer
   JSR LUI_LEVEL_TICK
-	BEQ AreaSecondaryRoutine_HealthBar
+	BEQ FuncPointerHp
 
 	; sky flash timer (ie. explosions)
 	DEC SkyFlashTimer
@@ -12415,45 +12415,8 @@ AreaSecondaryRoutine_PlayerPalette:
 	ADC #$07
 	STA byte_RAM_300
 
-AreaSecondaryRoutine_HealthBar:
-	LDA #$30
-	STA byte_RAM_0
-	JSR FindSpriteSlot
-
-	LDA PlayerHealth
-	BEQ AreaSecondaryRoutine_HealthBar_Draw
-
-	AND #$F0
-	LSR A
-	LSR A
-	ADC #$04 ; max health
-
-AreaSecondaryRoutine_HealthBar_Draw:
-	TAX
-
-	LDA #$FE
-	STA byte_RAM_3
-AreaSecondaryRoutine_HealthBar_Loop:
-	LDA HealthBarTiles, X
-	STA SpriteDMAArea + 1, Y
-	LDA #$10
-	STA SpriteDMAArea + 3, Y
-	LDA #$01
-	STA SpriteDMAArea + 2, Y
-	LDA byte_RAM_0
-	STA SpriteDMAArea, Y
-	CLC
-	ADC #$10
-	STA byte_RAM_0
-	INX
-	INY
-	INY
-	INY
-	INY
-	INC byte_RAM_3
-	LDA byte_RAM_3
-	CMP PlayerMaxHealth
-	BNE AreaSecondaryRoutine_HealthBar_Loop
+FuncPointerHp: ; AYY
+  JMP (HpFuncPointerLo)
 
 AreaSecondaryRoutine_POW:
 	LDA POWQuakeTimer
@@ -12476,6 +12439,89 @@ AreaSecondaryRoutine_POW_OffsetScreen:
 
 AreaSecondaryRoutine_Exit:
 	RTS
+
+AreaSecondaryRoutine_HealthBar:
+	LDA #$30
+	STA byte_RAM_0
+	JSR FindSpriteSlot
+
+	LDA PlayerHealth
+	BEQ AreaSecondaryRoutine_HealthBar_Draw ; +2
+
+	AND #$F0
+	LSR A
+	LSR A
+	ADC #$04 ; max health
+
+AreaSecondaryRoutine_HealthBar_Draw:
+	TAX ; +2
+
+	LDA #$FE ; +2
+	STA byte_RAM_3 ; +3
+
+AreaSecondaryRoutine_HealthBar_Loop:
+	LDA HealthBarTiles, X ;+4
+	STA SpriteDMAArea + 1, Y ;
+	LDA #$10
+	STA SpriteDMAArea + 3, Y
+	LDA #$01
+	STA SpriteDMAArea + 2, Y
+	LDA byte_RAM_0
+	STA SpriteDMAArea, Y
+	CLC
+	ADC #$10
+	STA byte_RAM_0
+	INX
+	INY
+	INY
+	INY
+	INY
+	INC byte_RAM_3
+	LDA byte_RAM_3
+	CMP PlayerMaxHealth
+	BNE AreaSecondaryRoutine_HealthBar_Loop
+  JMP AreaSecondaryRoutine_POW
+
+TrueCounterNumber:
+  .db $01, $03, $05, $07, $09, $0B, $0D, $0F, $11, $13, $15, $17, $19, $1B, $1D, $1F
+
+CounterXSubpixel:
+  JSR FindSpriteSlot
+  LDA PlayerXSubpixel
+  STA byte_RAM_0
+  JMP DrawCounter
+
+CounterGlobalTimer:
+  JSR FindSpriteSlot
+  LDA byte_RAM_10
+  STA byte_RAM_0
+
+DrawCounter:
+CalculateStuff:
+  LSR A ; + 2
+  LSR A ; + 2
+  LSR A ; + 2
+  LSR A ; + 2
+  TAX ; +2
+  LDA TrueCounterNumber, X ; + 4 (16 total)
+  STA SpriteDMAArea + 1, Y
+
+  LDA byte_RAM_0
+  AND #$0F
+  TAX
+  LDA TrueCounterNumber, X ; tile set
+  STA SpriteDMAArea + 5, Y ; tiles set
+  LDA #$30
+  STA SpriteDMAArea, Y ; Y Position
+  STA SpriteDMAArea + 4, Y ; Y position
+  LDA #$00
+  STA SpriteDMAArea + 2, Y ; Palette
+  STA SpriteDMAArea + 6, Y ; Palette
+  LDA #$10
+  STA SpriteDMAArea + 3, Y
+  LDA #$20
+  STA SpriteDMAArea + 7, Y
+  JMP AreaSecondaryRoutine_POW
 
 IFDEF SM_USA
 	.pad $BFE0, $FF

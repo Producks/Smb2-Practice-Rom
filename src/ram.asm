@@ -1238,8 +1238,10 @@ PokeyTempScreenX:
 StopwatchTimer:
 	.dsb 1 ; $04ff
 ; FOR RENT
+HpFuncPointerLo:
 	.dsb 1 ; $0500
 ; FOR RENT
+HpFuncPointerHi:
 	.dsb 1 ; $0501
 ; Flag enabled while the area is rendering on initialization
 byte_RAM_502:
@@ -2239,6 +2241,9 @@ PPUBuffer_TitleScreen_World = $7F03
 PPUBuffer_TitleScreen_Level = $7F05
 PPUBuffer_TitleScreen_Hp_Option = $7F09
 PPUBuffer_TitleScreen_Pause_Text = $7F18
+
+DigitTempTens = $7e81
+DigitsTempSingle = $7e82
 
 ShyGuy_Left_GFX = $020D
 ShyGuy_Left_X = $020F

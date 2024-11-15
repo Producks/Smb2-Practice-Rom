@@ -10,10 +10,20 @@ IndexTableHp:
   .db $00, $0C, $18, $24, $30, $3C
 
 HpPointerLo:
-  .db <TitleCardText
+  .db <AreaSecondaryRoutine_HealthBar
+  .db <CounterGlobalTimer
+  .db <CounterXSubpixel
+  .db <CounterGlobalTimer
+  .db <CounterGlobalTimer
+  .db <CounterGlobalTimer
 
 HpPointerHi:
-  .db >TitleCardText
+  .db >AreaSecondaryRoutine_HealthBar
+  .db >CounterGlobalTimer
+  .db >CounterXSubpixel
+  .db >CounterGlobalTimer
+  .db >CounterGlobalTimer
+  .db >CounterGlobalTimer
 
 HpOption:
   LDA Player1JoypadPress
@@ -43,4 +53,11 @@ LoopDumpDataHpOption:
   INY
   CPY #$0C
   BNE LoopDumpDataHpOption
+SetFuncPointer:
+  LDX HpBarIndex
+  LDA HpPointerLo, X
+  STA HpFuncPointerLo
+  LDA HpPointerHi, X
+  STA HpFuncPointerHi
+LeaveHp:
   JMP WaitThenJmpToLoop

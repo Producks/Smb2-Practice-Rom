@@ -154,6 +154,16 @@ DrawTitleScreen:
 
   JSR CopyDMADataTitleScreen
   JSR DrawLostLevel
+SetDefaultfunc:
+  LDA DefaultfuncLo
+  STA HpFuncPointerLo
+  LDA DefaultfuncHi
+  STA HpFuncPointerHi
 	JSR WaitForNMI_TitleScreen_TurnOnPPU
 
  ;- End of initilization of the title screen and rendering -;
+
+DefaultfuncLo:
+  .db <AreaSecondaryRoutine_HealthBar
+DefaultfuncHi:
+  .db >AreaSecondaryRoutine_HealthBar
