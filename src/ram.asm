@@ -98,6 +98,7 @@ SideInputHi:
 MarioSnoringTheEndFrameCounter: ; controls writing speed
 	.dsb 1 ; 7                ; $001c
 MarioSnoringCounter9:
+HpBarIndex:
 	.dsb 1 ; 8                ; $001d
 
 PlayerYHi:
@@ -2236,6 +2237,7 @@ ItemCarryYOffsetsRAM = $7f00
 PPUBuffer_TitleScreen = $7f00
 PPUBuffer_TitleScreen_World = $7F03
 PPUBuffer_TitleScreen_Level = $7F05
+PPUBuffer_TitleScreen_Hp_Option = $7F09
 PPUBuffer_TitleScreen_Pause_Text = $7F18
 
 ShyGuy_Left_GFX = $020D
