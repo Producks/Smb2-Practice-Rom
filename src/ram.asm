@@ -531,7 +531,9 @@ Player1JoypadHeld:
 Player2JoypadHeld:
 	.dsb 1 ; $00f8
 	.dsb 1 ; $00f9
+HpAddressLo:
 	.dsb 1 ; $00fa
+HpAddressHi:
 	.dsb 1 ; $00fb
 PPUScrollYMirror:
 	.dsb 1 ; $00fc
@@ -2243,9 +2245,6 @@ PPUBuffer_TitleScreen_World = $7F03
 PPUBuffer_TitleScreen_Level = $7F05
 PPUBuffer_TitleScreen_Hp_Option = $7F09
 PPUBuffer_TitleScreen_Pause_Text = $7F18
-
-DigitTempTens = $7e81
-DigitsTempSingle = $7e82
 
 ShyGuy_Left_GFX = $020D
 ShyGuy_Left_X = $020F

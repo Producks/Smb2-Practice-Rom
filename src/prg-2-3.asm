@@ -12487,46 +12487,36 @@ TrueCounterNumber:
 
 CanJump:
   JSR FindSpriteSlot
-  LDA $0099
-;  STA byte_RAM_0
-  BEQ CanJumpxd
+  LDA PlayerInAir
+  BEQ PlayerCantJump
   LDA #$F3
-  BNE DrawCheckMark
-CanJumpxd:
+  BNE DrawYesorNo
+PlayerCantJump:
   LDA #$F1
-  BNE DrawCheckMark
 
-CounterXSubpixel:
-  JSR FindSpriteSlot
-  LDA PlayerXSubpixel
-  STA byte_RAM_0
-  JMP DrawCounter
+DrawYesorNo:
+  STA SpriteDMAArea + 1, Y
+  LDA #$0C
+  STA SpriteDMAArea, Y ; Y Position
+  LDA #$01
+  STA SpriteDMAArea + 2, Y ; Palette
+  LDA #$03
+  STA SpriteDMAArea + 3, Y
+  JMP AreaSecondaryRoutine_POW
 
-LagFrame:
+DrawHpPointer:
   JSR FindSpriteSlot
-  LDA DroppedFrames
-  STA byte_RAM_0
-  JMP DrawCounter
-
-CounterYSubpixel:
-  JSR FindSpriteSlot
-  LDA PlayerYSubpixel
-  STA byte_RAM_0
-  JMP DrawCounter
-
-CounterGlobalTimer:
-  JSR FindSpriteSlot
-  LDA byte_RAM_10
+  LDX #$00
+  LDA (HpAddressLo, X)
   STA byte_RAM_0
 
 DrawCounter:
-CalculateStuff:
-  LSR A ; + 2
-  LSR A ; + 2
-  LSR A ; + 2
-  LSR A ; + 2
-  TAX ; +2
-  LDA TrueCounterNumber, X ; + 4 (16 total)
+  LSR A
+  LSR A
+  LSR A
+  LSR A
+  TAX
+  LDA TrueCounterNumber, X
   STA SpriteDMAArea + 1, Y
 
   LDA byte_RAM_0
@@ -12544,17 +12534,6 @@ CalculateStuff:
   STA SpriteDMAArea + 3, Y
   LDA #$0C
   STA SpriteDMAArea + 7, Y
-  JMP AreaSecondaryRoutine_POW
-
-DrawCheckMark:
-;  LDA #$F1
-  STA SpriteDMAArea + 1, Y
-  LDA #$0C
-  STA SpriteDMAArea, Y ; Y Position
-  LDA #$01
-  STA SpriteDMAArea + 2, Y ; Palette
-  LDA #$03
-  STA SpriteDMAArea + 3, Y
   JMP AreaSecondaryRoutine_POW
 
 IFDEF SM_USA

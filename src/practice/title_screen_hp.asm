@@ -10,21 +10,39 @@ TextTableHp:
 IndexTableHp:
   .db $00, $0C, $18, $24, $30, $3C, $48
 
-HpPointerLo:
+HpAddressPointerLo:
+  .db <byte_RAM_0
+  .db <byte_RAM_10
+  .db <PlayerXSubpixel
+  .db <PlayerYSubpixel
+  .db <DroppedFrames
+  .db <byte_RAM_0
+  .db <byte_RAM_0
+
+HpAddressPointerHi:
+  .db >byte_RAM_0
+  .db >byte_RAM_10
+  .db >PlayerXSubpixel
+  .db >PlayerYSubpixel
+  .db >DroppedFrames
+  .db >byte_RAM_0
+  .db >byte_RAM_0
+
+HpFuncPointerLoTable:
   .db <AreaSecondaryRoutine_HealthBar
-  .db <CounterGlobalTimer
-  .db <CounterXSubpixel
-  .db <CounterYSubpixel
-  .db <LagFrame
+  .db <DrawHpPointer
+  .db <DrawHpPointer
+  .db <DrawHpPointer
+  .db <DrawHpPointer
   .db <CanJump
   .db <CanJump
 
-HpPointerHi:
+HpFuncPointerHiTable:
   .db >AreaSecondaryRoutine_HealthBar
-  .db >CounterGlobalTimer
-  .db >CounterXSubpixel
-  .db >CounterYSubpixel
-  .db >LagFrame
+  .db >DrawHpPointer
+  .db >DrawHpPointer
+  .db >DrawHpPointer
+  .db >DrawHpPointer
   .db >CanJump
   .db >CanJump
 
@@ -58,9 +76,15 @@ LoopDumpDataHpOption:
   BNE LoopDumpDataHpOption
 SetFuncPointer:
   LDX HpBarIndex
-  LDA HpPointerLo, X
+  LDA HpFuncPointerLoTable, X
   STA HpFuncPointerLo
-  LDA HpPointerHi, X
+  LDA HpFuncPointerHiTable, X
   STA HpFuncPointerHi
+SetAdressPointerHp:
+  LDX HpBarIndex
+  LDA HpAddressPointerLo, X
+  STA HpAddressLo
+  LDA HpAddressPointerHi, X
+  STA HpAddressHi
 LeaveHp:
   JMP WaitThenJmpToLoop
