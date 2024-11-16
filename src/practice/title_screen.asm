@@ -63,6 +63,7 @@ ZeroMemoryAfterTitleScreen: ; CREATED MASSIVE BUG IF AUDIO WAS GOING, MADE ME LO
 	CPY #$F0
 	BCC ZeroMemoryAfterTitleScreen
 
+  INC BoolWorld
 	JMP HideAllSprites
 
 

@@ -1074,6 +1074,7 @@ ObjectNonSticky:
 	.dsb 1 ; $04ab
 
 ; FOR RENT
+; DONT GET BAITED ITS NOT FREE
 	.dsb 1 ; $04ac
 EnemiesKilledForHeart:
 	.dsb 1 ; $04ad
@@ -1084,6 +1085,7 @@ ObjectCarriedOver:
 KeyUsed:
 	.dsb 1 ; $04b0
 ; FOR RENT
+BoolWorld:
 	.dsb 1 ; $04b1
 PlayerRidingCarpet:
 	.dsb 1 ; $04b2

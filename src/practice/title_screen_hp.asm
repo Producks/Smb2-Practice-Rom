@@ -5,25 +5,28 @@ TextTableHp:
   .db $EC, $EE, $DB, $FA, $E9, $E2, $F1, $DE, $E5, $FA, $F2, $FA ; Sub pixel Y
   .db $E5, $DA, $E0, $FA, $DF, $EB, $DA, $E6, $DE, $FA, $FA, $FA ; Lag Frame
   .db $EF, $DE, $E0, $E0, $F9, $FA, $E0, $E5, $E2, $ED, $DC, $E1 ; Vegg. Glitch
+  .db $DC, $DA, $E7, $FA, $E3, $EE, $E6, $E9, $FA, $FA, $FA, $FA ; Can Jump
 
 IndexTableHp:
-  .db $00, $0C, $18, $24, $30, $3C
+  .db $00, $0C, $18, $24, $30, $3C, $48
 
 HpPointerLo:
   .db <AreaSecondaryRoutine_HealthBar
   .db <CounterGlobalTimer
   .db <CounterXSubpixel
-  .db <CounterGlobalTimer
-  .db <CounterGlobalTimer
-  .db <CounterGlobalTimer
+  .db <CounterYSubpixel
+  .db <LagFrame
+  .db <CanJump
+  .db <CanJump
 
 HpPointerHi:
   .db >AreaSecondaryRoutine_HealthBar
   .db >CounterGlobalTimer
   .db >CounterXSubpixel
-  .db >CounterGlobalTimer
-  .db >CounterGlobalTimer
-  .db >CounterGlobalTimer
+  .db >CounterYSubpixel
+  .db >LagFrame
+  .db >CanJump
+  .db >CanJump
 
 HpOption:
   LDA Player1JoypadPress
@@ -32,7 +35,7 @@ HpOption:
 IncreaseHpIndex:
   LDX HpBarIndex
   INX
-  CPX #$06
+  CPX #$07
   BNE UpdateHpIndex
   LDX #$00
   BEQ UpdateHpIndex
@@ -40,7 +43,7 @@ DecreaseHpIndex:
   LDX HpBarIndex
   DEX
   BPL UpdateHpIndex
-  LDX #$05
+  LDX #$06
 UpdateHpIndex:
   STX HpBarIndex
   LDA IndexTableHp, X

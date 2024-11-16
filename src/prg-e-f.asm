@@ -949,12 +949,17 @@ ContinueGame:
 	STA ExtraLives
 
 GoToWorldStartingLevel:
-;	LDX CurrentWorld
-;	LDY WorldStartingLevel, X
-;	STY CurrentLevel
-;	STY CurrentLevel_Init
-  LDA CurrentLevel ; TO DO DOUBLE CHECK IF BUG HERE LATER
+  LDA BoolWorld ; Check later if that fix is enough
+  BEQ NormalGoToWorld
+  DEC BoolWorld
+  LDA CurrentLevel
   STA CurrentLevel_Init
+  JMP LevelStartCharacterSelectMenu
+NormalGoToWorld:
+	LDX CurrentWorld
+	LDY WorldStartingLevel, X
+	STY CurrentLevel
+	STY CurrentLevel_Init
 
 LevelStartCharacterSelectMenu:
 	JSR DoCharacterSelectMenu
@@ -1007,9 +1012,9 @@ IFDEF AREA_HEADER_TILESET
 ENDIF
 
 	;JSR HideAllSprites
-  NOP
-  NOP
-  NOP ; CHANGE CHECK LATER? NOT SURE
+;  NOP
+;  NOP
+;  NOP ; CHANGE CHECK LATER? NOT SURE
 
 	JSR WaitForNMI
 
@@ -1181,15 +1186,15 @@ PauseScreenExitCheck:
 	;DEC byte_RAM_6
 	;BPL DoSuicideCheatCheck
   JMP LUI_PAUSE_TICK
-  .db $E4
+;  .db $E4
 
-	INC byte_RAM_7
-	LDA byte_RAM_7
-	AND #$01
-	CLC
-	ADC #$0D ; Will use either $0D or $0E from the update index pointers
-	STA ScreenUpdateIndex ; @TODO I assume this is what blinks "PAUSE"
-	JMP PauseScreenLoop
+;	INC byte_RAM_7
+;	LDA byte_RAM_7
+;	AND #$01
+;	CLC
+;	ADC #$0D ; Will use either $0D or $0E from the update index pointers
+;	STA ScreenUpdateIndex ; @TODO I assume this is what blinks "PAUSE"
+;	JMP PauseScreenLoop
 
 ;
 ; Unpauses the game
