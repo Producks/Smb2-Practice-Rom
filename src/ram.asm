@@ -103,8 +103,10 @@ HpBarIndex:
 
 PlayerYHi:
 CastRollSpriteSetupTemp:
+SideInputBuildUp:
 	.dsb 1 ; $001e
 ObjectYHi:
+SideInputCoolDown:
 CastRollSprite1A:
 	.dsb 1 ; $001f
 CastRollSprite1B:
@@ -2245,6 +2247,12 @@ PPUBuffer_TitleScreen_World = $7F03
 PPUBuffer_TitleScreen_Level = $7F05
 PPUBuffer_TitleScreen_Hp_Option = $7F09
 PPUBuffer_TitleScreen_Pause_Text = $7F18
+
+PPUBuffer_Hp_Option_Hi = $7F11
+PPUBuffer_Hp_Option_Lo = $7F13
+
+CustomHpLo = $7e81
+CustomHpHi = $7e82
 
 ShyGuy_Left_GFX = $020D
 ShyGuy_Left_X = $020F

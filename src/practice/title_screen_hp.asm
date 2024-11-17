@@ -6,9 +6,10 @@ TextTableHp:
   .db $E5, $DA, $E0, $FA, $DF, $EB, $DA, $E6, $DE, $FA, $FA, $FA ; Lag Frame
   .db $EF, $DE, $E0, $E0, $F9, $FA, $E0, $E5, $E2, $ED, $DC, $E1 ; Vegg. Glitch
   .db $DC, $DA, $E7, $FA, $E3, $EE, $E6, $E9, $FA, $FA, $FA, $FA ; Can Jump
+  .db $DC, $EE, $EC, $ED, $E8, $E6, $FA, $CB, $D0, $D0, $D0, $D0 ; CUSTOM $2000
 
 IndexTableHp:
-  .db $00, $0C, $18, $24, $30, $3C, $48
+  .db $00, $0C, $18, $24, $30, $3C, $48, $54
 
 HpAddressPointerLo:
   .db <byte_RAM_0
@@ -16,6 +17,7 @@ HpAddressPointerLo:
   .db <PlayerXSubpixel
   .db <PlayerYSubpixel
   .db <DroppedFrames
+  .db <byte_RAM_0
   .db <byte_RAM_0
   .db <byte_RAM_0
 
@@ -27,6 +29,7 @@ HpAddressPointerHi:
   .db >DroppedFrames
   .db >byte_RAM_0
   .db >byte_RAM_0
+  .db >byte_RAM_0
 
 HpFuncPointerLoTable:
   .db <AreaSecondaryRoutine_HealthBar
@@ -36,6 +39,7 @@ HpFuncPointerLoTable:
   .db <DrawHpPointer
   .db <CanJump
   .db <CanJump
+  .db <DrawHpPointer
 
 HpFuncPointerHiTable:
   .db >AreaSecondaryRoutine_HealthBar
@@ -45,6 +49,7 @@ HpFuncPointerHiTable:
   .db >DrawHpPointer
   .db >CanJump
   .db >CanJump
+  .db >DrawHpPointer
 
 HpOption:
   LDA Player1JoypadPress
@@ -53,7 +58,7 @@ HpOption:
 IncreaseHpIndex:
   LDX HpBarIndex
   INX
-  CPX #$07
+  CPX #$08
   BNE UpdateHpIndex
   LDX #$00
   BEQ UpdateHpIndex
@@ -61,7 +66,7 @@ DecreaseHpIndex:
   LDX HpBarIndex
   DEX
   BPL UpdateHpIndex
-  LDX #$06
+  LDX #$07
 UpdateHpIndex:
   STX HpBarIndex
   LDA IndexTableHp, X
@@ -88,3 +93,77 @@ SetAdressPointerHp:
   STA HpAddressHi
 LeaveHp:
   JMP WaitThenJmpToLoop
+
+; Logic used to add carry like a 16 bit number, but since I added select I removed it.
+HandleAB:
+  LDX HpBarIndex
+  CPX #$07
+  BNE LeaveAB ; Check if our cursor index for the option is on custom
+  AND #ControllerInput_B
+  BNE DecreaseCustomHp
+
+IncreaseCustomHp:
+  LDA Player1JoypadHeld
+  AND #ControllerInput_Select
+  BNE IncHi
+
+IncLo:
+  INC CustomHpLo
+  JMP UpdateCustomHp
+
+IncHi:
+  INC CustomHpHi
+  LDA CustomHpHi
+  CMP #$80
+  BNE UpdateCustomHp
+  LDA #$00
+  STA CustomHpHi
+  JMP UpdateCustomHp
+
+DecreaseCustomHp:
+  LDA Player1JoypadHeld
+  AND #ControllerInput_Select
+  BNE DecHi
+
+DecLo:
+  DEC CustomHpLo
+  JMP UpdateCustomHp
+
+DecHi:
+  DEC CustomHpHi
+  BPL UpdateCustomHp
+  LDA #$7F
+  STA CustomHpHi
+
+UpdateCustomHp:
+  LDX CustomHpHi
+  STX HpAddressHi
+  JSR SplitDigits
+  STY PPUBuffer_Hp_Option_Hi
+  STA PPUBuffer_Hp_Option_Hi + 1
+  LDX CustomHpLo
+  STX HpAddressLo
+  JSR SplitDigits
+  STY PPUBuffer_Hp_Option_Lo
+  STA PPUBuffer_Hp_Option_Lo + 1
+
+LeaveAB:
+  JMP WaitThenJmpToLoop
+
+; Value in X
+; Tens Y
+; Digits A
+SplitDigits:
+  TXA
+  LSR A
+  LSR A
+  LSR A
+  LSR A
+  CLC
+  ADC #$D0
+  TAY
+  TXA
+  AND #$0F
+  CLC
+  ADC #$D0
+  RTS

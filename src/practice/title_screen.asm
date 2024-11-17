@@ -3,22 +3,49 @@
 ;- Loop of the title screen -; 
 TitleScreenLoop:
 ReadInput:
+CheckStart:
 	LDA Player1JoypadPress
 	CMP #ControllerInput_Start
-	BEQ QuitTrampoline
+	BNE CheckUpDown
+  JMP QuitTitleScreen
+
+CheckUpDown:
   AND #ControllerInput_Up | ControllerInput_Down
   BNE MoveCursor
+
+CheckLeftRight:
   LDA Player1JoypadPress
   AND #ControllerInput_Left | ControllerInput_Right
-  BNE HandleSideInput
+  BEQ CheckHeldLeftRight
+  JMP HandleSideInputSingleTap
+
+CheckHeldLeftRight:
+  LDA Player1JoypadHeld
+  AND #ControllerInput_Left | ControllerInput_Right
+  BEQ CheckAB
+  JMP HandleHeldInput
+
+CheckAB:
+  LDA Player1JoypadPress
+  AND #ControllerInput_A | ControllerInput_B
+  BEQ CheckHeldAB
+  JMP HandleABInput
+
+CheckHeldAB:
+  LDA Player1JoypadHeld
+  AND #ControllerInput_A | ControllerInput_B
+  BEQ ResetHold
+  JMP HandleHeldInputAB
+
+ResetHold:
+  LDA #$00 ; Reset held variables
+  STA SideInputBuildUp
+  STA SideInputCoolDown
 
 WaitThenJmpToLoop:
   JSR AnimationTitleScreen
 	JSR WaitForNMI_TitleScreen
   JMP ReadInput
-
-QuitTrampoline:
-  JMP QuitTitleScreen ; Address is too far to branch out, so let's do it this way
 
 ;- Loop of the title screen end -; 
 
@@ -34,6 +61,33 @@ SideInputFuncPointerHi:
 	.db >HpOption
 	.db >PauseSelect
 
+HandleHeldInput:
+  LDY CursorPosition
+  BNE CheckAB ; Leave if we are not on the first option
+
+  LDA SideInputBuildUp
+  CMP #$20 ; Cooldown for how many frames we need to hold
+  BEQ CooldownMatchHeldInput
+  INC SideInputBuildUp
+  JMP WaitThenJmpToLoop
+
+CooldownMatchHeldInput:
+  LDA SideInputCoolDown ; Add a cooldown of how many frames until it register
+  BEQ RegisterInputHeld ; If cooldown is 0, branch and do the action
+  DEC SideInputCoolDown
+  JMP WaitThenJmpToLoop
+
+RegisterInputHeld:
+  LDA #$03 ; Constant for how many frames to wait for cooldown
+  STA SideInputCoolDown
+  LDA Player1JoypadHeld
+  ORA Player1JoypadPress
+  STA Player1JoypadPress
+  JMP HandleSideInput
+
+HandleSideInputSingleTap:
+  LDA #$00 ; Reset held variables
+  STA SideInputBuildUp
 HandleSideInput:
   LDY CursorPosition
   LDA SideInputFuncPointerLo, Y
@@ -41,6 +95,29 @@ HandleSideInput:
   LDA SideInputFuncPointerHi, Y
   STA SideInputHi
   JMP (SideInputLo)
+
+HandleHeldInputAB:
+  LDA SideInputBuildUp
+  CMP #$10 ; Cooldown for how many frames we need to hold
+  BEQ RegisterInputHeldx
+  INC SideInputBuildUp
+  JMP WaitThenJmpToLoop
+
+CooldownMatchHeldInputx:
+  LDA SideInputCoolDown ; Add a cooldown of how many frames until it register
+  BEQ RegisterInputHeldx ; If cooldown is 0, branch and do the action
+  DEC SideInputCoolDown
+  JMP WaitThenJmpToLoop
+
+RegisterInputHeldx:
+  LDA #$01 ; Constant for how many frames to wait for cooldown
+  STA SideInputCoolDown
+  LDA Player1JoypadHeld
+  ORA Player1JoypadPress
+  STA Player1JoypadPress
+
+HandleABInput:
+  JMP HandleAB
 
 .include "src/practice/title_screen_level_select.asm"
 
