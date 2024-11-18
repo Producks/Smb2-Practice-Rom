@@ -4,7 +4,7 @@ TextTableHp:
   .db $EC, $EE, $DB, $FA, $E9, $E2, $F1, $DE, $E5, $FA, $F1, $FA ; Sub pixel X
   .db $EC, $EE, $DB, $FA, $E9, $E2, $F1, $DE, $E5, $FA, $F2, $FA ; Sub pixel Y
   .db $E5, $DA, $E0, $FA, $DF, $EB, $DA, $E6, $DE, $FA, $FA, $FA ; Lag Frame
-  .db $EF, $DE, $E0, $E0, $F9, $FA, $E0, $E5, $E2, $ED, $DC, $E1 ; Vegg. Glitch
+  .db $EF, $DE, $E0, $E0, $C9, $FA, $E0, $E5, $E2, $ED, $DC, $E1 ; Vegg. Glitch
   .db $DC, $DA, $E7, $FA, $E3, $EE, $E6, $E9, $FA, $FA, $FA, $FA ; Can Jump
   .db $DC, $EE, $EC, $ED, $E8, $E6, $FA, $CB, $D0, $D0, $D0, $D0 ; CUSTOM $0000
 
@@ -37,7 +37,7 @@ HpFuncPointerLoTable:
   .db <DrawHpPointer
   .db <DrawHpPointer
   .db <DrawHpPointer
-  .db <CanJump
+  .db <Sand
   .db <CanJump
   .db <DrawHpPointer
 
@@ -47,7 +47,7 @@ HpFuncPointerHiTable:
   .db >DrawHpPointer
   .db >DrawHpPointer
   .db >DrawHpPointer
-  .db >CanJump
+  .db >Sand
   .db >CanJump
   .db >DrawHpPointer
 

@@ -1369,9 +1369,9 @@ loc_BANKF_E627:
 
 	;JSR WaitForNMI_TurnOffPPU
   JSR LUI_SUB_AREA_BEGIN_EXIT ; HIJACK
-  NOP
-  NOP
-  NOP
+;  NOP
+;  NOP
+;  NOP
 	;JSR HideAllSprites
 
 	LDY CompareMusicIndex

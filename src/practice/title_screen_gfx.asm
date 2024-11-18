@@ -127,4 +127,5 @@ UpdateTitleScreen:
   .db $20, $73, $03, $D1, $F4, $D1 ; Level Select Option
   .db $22, $AD, $0C, $EF, $DA, $E7, $E2, $E5, $E5, $DA, $FF, $FF, $FF, $FF, $FF  ; Hp bar option
   .db $23, $0D, $06, $DF, $E2, $F1, $DE, $DD, $FA ; Pause option
+  .db $3F, $0D, $01, $27
   .db $00

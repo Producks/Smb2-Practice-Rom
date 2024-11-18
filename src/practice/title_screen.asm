@@ -143,12 +143,17 @@ ZeroMemoryAfterTitleScreen: ; CREATED MASSIVE BUG IF AUDIO WAS GOING, MADE ME LO
   INC BoolWorld
 	JMP HideAllSprites
 
+PaletteTimerTable:
+  .db $24, $08, $08, $08
+
+PaletteColorTable:
+  .db $27, $17, $07, $17
 
 AnimationTitleScreen:
   INC byte_RAM_10 ; Increase global timer
   LDA byte_RAM_10
   CMP #$06
-  BNE ScreenUpdateTitleScreenLoop
+  BNE PaletteTitleScreen
   LDA #$00
   STA byte_RAM_10
 ShyGuyAnimation:
@@ -160,6 +165,29 @@ ShyGuyAnimation:
   STA ShyGuy_Right_GFX
   DEC ShyGuy_Left_X
   DEC ShyGuy_Right_X
+
+PaletteTitleScreen:
+  LDA PaletteTimerTitleScreen
+  BNE DecreasePaletteTimerTitleScreen
+  INC PaletteIndexTitleScreen
+  LDA PaletteIndexTitleScreen
+  CMP #$04
+  BNE SetNewPaletteIndex
+  LDA #$00
+
+SetNewPaletteIndex:
+  STA PaletteIndexTitleScreen
+
+SetNewColorPalette:
+  TAX
+  LDA PaletteTimerTable, X
+  STA PaletteTimerTitleScreen
+  LDA PaletteColorTable, X
+  STA PPUBuffer_TitleScreen_Palette
+
+DecreasePaletteTimerTitleScreen:
+  DEC PaletteTimerTitleScreen
+
 ScreenUpdateTitleScreenLoop:
   LDA #$02 ; Screen update
   STA ScreenUpdateIndex

@@ -110,8 +110,10 @@ SideInputCoolDown:
 CastRollSprite1A:
 	.dsb 1 ; $001f
 CastRollSprite1B:
+PaletteIndexTitleScreen:
 	.dsb 1 ; 1                ; $0020
 CastRollSprite1C:
+PaletteTimerTitleScreen:
 	.dsb 1 ; 2                ; $0021
 CastRollSprite2A:
 	.dsb 1 ; 3                ; $0022
@@ -532,6 +534,7 @@ Player1JoypadHeld:
 	.dsb 1 ; $00f7
 Player2JoypadHeld:
 	.dsb 1 ; $00f8
+SandCollision:
 	.dsb 1 ; $00f9
 HpAddressLo:
 	.dsb 1 ; $00fa
@@ -1263,6 +1266,7 @@ PPUScrollCheckHi:
 PPUScrollCheckLo:
 	.dsb 1 ; $0507
 ; FOR RENT
+SandTimer:
 	.dsb 1 ; $0508
 PPUScrollYMirror_Backup:
 	.dsb 1 ; $0509
@@ -2247,6 +2251,7 @@ PPUBuffer_TitleScreen_World = $7F03
 PPUBuffer_TitleScreen_Level = $7F05
 PPUBuffer_TitleScreen_Hp_Option = $7F09
 PPUBuffer_TitleScreen_Pause_Text = $7F18
+PPUBuffer_TitleScreen_Palette = $7F21
 
 PPUBuffer_Hp_Option_Hi = $7F11
 PPUBuffer_Hp_Option_Lo = $7F13

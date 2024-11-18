@@ -12485,6 +12485,21 @@ AreaSecondaryRoutine_HealthBar_Loop:
 TrueCounterNumber:
   .db $3C, $3E, $40, $42, $44, $46, $48, $4A, $5E, $B0, $B2, $98, $9A, $90, $ED, $EF
 
+Sand:
+  JSR FindSpriteSlot
+  LDA SandCollision
+  CMP #BackgroundTile_DiggableSand
+  BNE LeaveSand
+  LDA PlayerState
+  CMP #02
+  BEQ LeaveSand
+  INC SandTimer
+
+LeaveSand:
+  LDA SandTimer
+  STA byte_RAM_0
+  JMP DrawCounter
+
 CanJump:
   JSR FindSpriteSlot
   LDA PlayerInAir

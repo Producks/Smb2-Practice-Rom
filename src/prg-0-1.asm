@@ -3156,6 +3156,8 @@ PlayerTileCollision_Upward:
 PlayerTileCollision_Downward:
 	JSR CheckPlayerTileCollision_IncrementTwice ; skip top two tiles
 	JSR CheckPlayerTileCollision_Twice ; use bottom two tiles
+  LDA byte_RAM_0
+  STA SandCollision
 
 	LDA PlayerCollision
 	BNE PlayerTileCollision_CheckInteractiveTiles

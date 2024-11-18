@@ -54,7 +54,7 @@ LoopInitPPUBufferTitleScreen:
   LDA UpdateTitleScreen, Y
   STA PPUBuffer_TitleScreen, Y
   INY
-  CPY #$1F
+  CPY #$23
   BNE LoopInitPPUBufferTitleScreen
 ExitInitBufferLevelSelect:
   RTS
@@ -159,6 +159,13 @@ SetDefaultfunc:
   STA HpFuncPointerLo
   LDA DefaultfuncHi
   STA HpFuncPointerHi
+
+SetPaletteInfo:
+  LDA #$00
+  STA PaletteIndexTitleScreen
+  LDA #$30
+  STA PaletteTimerTitleScreen
+
 	JSR WaitForNMI_TitleScreen_TurnOnPPU
 
  ;- End of initilization of the title screen and rendering -;
