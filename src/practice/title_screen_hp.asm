@@ -6,7 +6,7 @@ TextTableHp:
   .db $E5, $DA, $E0, $FA, $DF, $EB, $DA, $E6, $DE, $FA, $FA, $FA ; Lag Frame
   .db $EF, $DE, $E0, $E0, $F9, $FA, $E0, $E5, $E2, $ED, $DC, $E1 ; Vegg. Glitch
   .db $DC, $DA, $E7, $FA, $E3, $EE, $E6, $E9, $FA, $FA, $FA, $FA ; Can Jump
-  .db $DC, $EE, $EC, $ED, $E8, $E6, $FA, $CB, $D0, $D0, $D0, $D0 ; CUSTOM $2000
+  .db $DC, $EE, $EC, $ED, $E8, $E6, $FA, $CB, $D0, $D0, $D0, $D0 ; CUSTOM $0000
 
 IndexTableHp:
   .db $00, $0C, $18, $24, $30, $3C, $48, $54
@@ -55,6 +55,7 @@ HpOption:
   LDA Player1JoypadPress
   CMP #ControllerInput_Left
   BEQ DecreaseHpIndex
+
 IncreaseHpIndex:
   LDX HpBarIndex
   INX
@@ -62,16 +63,19 @@ IncreaseHpIndex:
   BNE UpdateHpIndex
   LDX #$00
   BEQ UpdateHpIndex
+
 DecreaseHpIndex:
   LDX HpBarIndex
   DEX
   BPL UpdateHpIndex
   LDX #$07
+
 UpdateHpIndex:
   STX HpBarIndex
   LDA IndexTableHp, X
   TAX
   LDY #$00 ; Index for loop
+
 LoopDumpDataHpOption:
   LDA TextTableHp, X
   STA PPUBuffer_TitleScreen_Hp_Option, Y
@@ -79,22 +83,30 @@ LoopDumpDataHpOption:
   INY
   CPY #$0C
   BNE LoopDumpDataHpOption
+
 SetFuncPointer:
   LDX HpBarIndex
   LDA HpFuncPointerLoTable, X
   STA HpFuncPointerLo
   LDA HpFuncPointerHiTable, X
   STA HpFuncPointerHi
+
+CheckIfCustomIndex:
+  LDA HpBarIndex
+  CMP #$07
+  BEQ UpdateCustomHp
+
 SetAdressPointerHp:
   LDX HpBarIndex
   LDA HpAddressPointerLo, X
   STA HpAddressLo
   LDA HpAddressPointerHi, X
   STA HpAddressHi
+
 LeaveHp:
   JMP WaitThenJmpToLoop
 
-; Logic used to add carry like a 16 bit number, but since I added select I removed it.
+; Logic here used to add carry like a 16 bit number, but since I added select I ended removing it.
 HandleAB:
   LDX HpBarIndex
   CPX #$07
