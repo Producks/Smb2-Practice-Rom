@@ -12500,7 +12500,6 @@ IncreaseSandTimer:
   JMP LeaveSand
 
 AddSandTimer:
-  DEC TempTimerSand
   LDA SandTimer
   CLC
   ADC TempTimerSand
