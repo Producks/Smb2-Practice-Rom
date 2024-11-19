@@ -18,7 +18,7 @@ Run **build.sh**; the practice ROM will be in the **bin** folder.
 ## Extra Features
 * Best title screen this world has ever seen
 * Level select on the title screen
-* Option menu to replace the Hp bar function, click here for more details
+* Option menu to replace the Hp bar function, scroll down for more details
 * Pause screen now shows timers, which can be toggled to be dynamic or fixed via the title screen.
 
 
