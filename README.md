@@ -4,7 +4,6 @@ A fork from [lui](https://github.com/Lui37/smb2u-hack/releases) practice rom
 ## How to Compile/Patch
 You have two options: either compile the project or use one of the patches in the release section
 ### Patch an existing rom
-You can find the latest patch [here]()  
 This project was made for the NTSC PRG0 version of the game.  
 The SHA256 hash is `47ba60fad332fdea5ae44b7979fe1ee78de1d316ee027fea2ad5fe3c0d86f25a`  
 You can check your rom hash [here](https://emn178.github.io/online-tools/sha256_checksum.html)  
