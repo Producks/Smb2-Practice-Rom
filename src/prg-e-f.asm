@@ -606,6 +606,8 @@ InitializeSomeLevelStuff:
 	STA InJarType
 	STA StopwatchTimer
 	STA PlayerCurrentSize
+  STA SandTimer
+  STA TempTimerSand
 	RTS
 
 

@@ -5011,6 +5011,8 @@ HandlePlayerState_Respawning_Regular:
 	STA PlayerCurrentSize
 	STA InSubspaceOrJar
 	STA SubspaceTimer
+  STA SandTimer ; Added temp sand
+  STA TempTimerSand ; added temp sand
 
 	JSR RestorePlayerToFullHealth
 

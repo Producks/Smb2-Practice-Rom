@@ -68,6 +68,8 @@ AreaInitialization:
 	STA JumpFloatTimer
 	STA QuicksandDepth
 	STA BossBeaten
+  STA SandTimer ; temp sand added
+  STA TempTimerSand ; temp sand added
 
 IFDEF RESET_CHR_LATCH
 	LDY #$FF
