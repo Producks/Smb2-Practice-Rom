@@ -2258,6 +2258,7 @@ PPUBuffer_Hp_Option_Lo = $7F13
 
 CustomHpLo = $7e81
 CustomHpHi = $7e82
+TempTimerSand = $7e83
 
 ShyGuy_Left_GFX = $020D
 ShyGuy_Left_X = $020F

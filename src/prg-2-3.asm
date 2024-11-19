@@ -12489,11 +12489,26 @@ Sand:
   JSR FindSpriteSlot
   LDA SandCollision
   CMP #BackgroundTile_DiggableSand
-  BNE LeaveSand
-  LDA PlayerState
-  CMP #02
-  BEQ LeaveSand
-  INC SandTimer
+  BNE ResetSandTimer
+
+CheckIfPlayerIsDigging:
+  LDA HoldingItem
+  BNE AddSandTimer
+
+IncreaseSandTimer:
+  INC TempTimerSand
+  JMP LeaveSand
+
+AddSandTimer:
+  DEC TempTimerSand
+  LDA SandTimer
+  CLC
+  ADC TempTimerSand
+  STA SandTimer
+
+ResetSandTimer:
+  LDA #$00
+  STA TempTimerSand
 
 LeaveSand:
   LDA SandTimer
