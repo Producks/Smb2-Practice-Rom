@@ -53,7 +53,8 @@ The implementation of this is a bit weird, and I currently don't have an ideal w
 As a result, it's normal to lose a frame after each dig if you're perfect.  
 The initial dig can have 0 frames of delay, but any subsequent dig, where you're waiting for the animation, will always add +1 frame if executed perfectly.
 * `Can jump`: Indicates whether jumping is currently allowed
-* `Custom`: Allows you to select which address to display. See the custom control section for more information.
+* `Custom`: Allows you to select which address to display. See the custom control section for more information.  
+[Here a list](https://github.com/Producks/Smb2-Practice-Rom/blob/Practice/src/ram.asm) of the ram adresses
 
 ## Credit
 * **Lui**: For the original practice hack.
